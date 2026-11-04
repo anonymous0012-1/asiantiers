@@ -75,10 +75,14 @@ module.exports = {
             // UPDATE PANEL
             // -----------------------------------------
 
-            await queueRenderer.updateQueuePanel(
-                interaction.client,
-                gamemode
-            );
+try {
+    await queueRenderer.updateQueuePanel(
+        interaction.client,
+        gamemode
+    );
+} catch (error) {
+    console.error('QUEUE PANEL UPDATE ERROR:', error);
+}
 
             // -----------------------------------------
             // @HERE PING
