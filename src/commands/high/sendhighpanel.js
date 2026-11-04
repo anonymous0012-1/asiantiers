@@ -41,7 +41,7 @@ module.exports = {
 
         // EXACT CUSTOM TROPHY EMOJI
         const trophyEmoji =
-            '<:1471678791821688842:1546946782565769267>';
+            '<:trophy~2:1567483693130584136>';
 
         // ==========================================
         // EMBED
