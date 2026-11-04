@@ -1,0 +1,21 @@
+{
+  "name": "Asiantestingbot",
+  "version": "1.0.0",
+  "description": "Production-ready Tier Testing Bot for AsianTiers",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.1",
+    "express": "^5.2.1",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}
