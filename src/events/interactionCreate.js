@@ -703,7 +703,7 @@ module.exports = {
                     const transcriptChannel =
                         await interaction.guild.channels.fetch(
                             config.channels.transcriptChannel ||
-                            '1539160375411478558'
+                            '1567481439816253522'
                         );
 
                     if (!transcriptChannel) {
@@ -2008,7 +2008,7 @@ module.exports = {
                         interaction.guild.channels.cache.find(
                             channel =>
                                 channel.parentId ===
-                                    '1538792400737148978' &&
+                                    '1567481342386507777' &&
                                 channel.topic?.includes(
                                     `HT_USER:${interaction.user.id}`
                                 )
@@ -2031,7 +2031,7 @@ module.exports = {
                     // =============================================
 
                     const categoryId =
-                        '1538792400737148978';
+                        '1567481342386507777';
 
                     const safeName =
                         player.ign
