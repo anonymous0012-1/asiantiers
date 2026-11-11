@@ -45,7 +45,11 @@ module.exports = {
                     { name: 'NethPot', value: 'NethPot' },
                     { name: 'DiaPot', value: 'DiaPot' },
                     { name: 'SMP', value: 'SMP' },
-                    { name: 'UHC', value: 'UHC' }
+                    { name: 'UHC', value: 'UHC' },
+                    { name: 'SpearMace', value: 'spearmace' },
+                    { name: 'Diamond SMP', value: 'diasmp' },
+                    { name: 'Manhunt', value: 'manhunt' },
+                    { name: 'ShieldLess UHC', value: 'shieldlessuhc' }
                 )
         ),
 
@@ -362,6 +366,9 @@ module.exports = {
                 const gameEmoji =
                     emojis.gamemodes?.[gamemode] || '';
 
+            const displayName =
+                    config.gamemodeNames?.[gamemode] || gamemode;
+
                 const testerEmoji =
                     emojis.tester ||
                     emojis.ui?.tester ||
@@ -404,7 +411,7 @@ module.exports = {
                                 'Game Mode',
 
                             value:
-                                `${gameEmoji} **${gamemode}**`,
+                                `${gameEmoji} **${displayName}**`,
 
                             inline:
                                 false

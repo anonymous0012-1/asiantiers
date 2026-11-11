@@ -7,7 +7,11 @@ module.exports = {
         DiaPot: '<:diapot:1567493613951385762>',
         Crystal: '<:Crystal:1567479595165425806>',
         Axe: '<:1axe:1567479311693520926>',
-        NethPot: '<:nethpot:1567479520632643655>'
+        NethPot: '<:nethpot:1567479520632643655>',
+        spearmace: '<:spearmace:1569963562967760936>',
+        diasmp: '<:diasmp:1569963433124823101>',
+        manhunt: '<:manhunt:1569963535746859068>',
+        shieldlessuhc: '<:shieldless:1569963509540978699>'
     },
 
     tester: '<:verified_tester:1567495110915133460>',

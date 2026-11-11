@@ -92,7 +92,11 @@ module.exports = {
             'NethPot',
             'SMP',
             'UHC',
-            'DiaPot'
+            'DiaPot',
+            'spearmace',
+            'diasmp',
+            'manhunt',
+            'shieldlessuhc'
         ];
 
         const rows = [];
@@ -115,7 +119,7 @@ module.exports = {
                         .setLabel(
                             gamemode === 'NethPot'
                                 ? 'Nethpot'
-                                : gamemode
+                                : (config.gamemodeNames?.[gamemode] || gamemode)
                         )
                         .setStyle(
                             ButtonStyle.Primary

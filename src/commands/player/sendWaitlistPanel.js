@@ -112,6 +112,34 @@ module.exports = {
                     .setCustomId('waitlist_uhc')
                     .setLabel('UHC')
                     .setEmoji(emojis.gamemodes.UHC)
+                    .setStyle(ButtonStyle.Success),
+
+                new ButtonBuilder()
+                    .setCustomId('waitlist_spearmace')
+                    .setLabel('SpearMace')
+                    .setEmoji(emojis.gamemodes.spearmace)
+                    .setStyle(ButtonStyle.Success),
+
+                new ButtonBuilder()
+                    .setCustomId('waitlist_diasmp')
+                    .setLabel('Diamond SMP')
+                    .setEmoji(emojis.gamemodes.diasmp)
+                    .setStyle(ButtonStyle.Success)
+            );
+
+        const row3 = new ActionRowBuilder()
+            .addComponents(
+
+                new ButtonBuilder()
+                    .setCustomId('waitlist_manhunt')
+                    .setLabel('Manhunt')
+                    .setEmoji(emojis.gamemodes.manhunt)
+                    .setStyle(ButtonStyle.Success),
+
+                new ButtonBuilder()
+                    .setCustomId('waitlist_shieldlessuhc')
+                    .setLabel('ShieldLess UHC')
+                    .setEmoji(emojis.gamemodes.shieldlessuhc)
                     .setStyle(ButtonStyle.Success)
             );
 
@@ -124,7 +152,8 @@ module.exports = {
             components: [
                 registerRow,
                 row1,
-                row2
+                row2,
+                row3
             ]
         });
 

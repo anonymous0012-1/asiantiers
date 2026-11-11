@@ -990,7 +990,19 @@ module.exports = {
                             'Crystal',
 
                         waitlist_nethpot:
-                            'NethPot'
+                            'NethPot',
+
+                        waitlist_spearmace:
+                            'spearmace',
+
+                        waitlist_diasmp:
+                            'diasmp',
+
+                        waitlist_manhunt:
+                            'manhunt',
+
+                        waitlist_shieldlessuhc:
+                            'shieldlessuhc'
                     };
 
                     const gamemode =
@@ -2132,13 +2144,17 @@ module.exports = {
                                 highGamemode
                             ] || '';
 
+                    const displayName =
+                        config.gamemodeNames?.[highGamemode] ||
+                        highGamemode;
+
                     const ticketEmbed =
                         new EmbedBuilder()
                             .setColor(
                                 config.colors.primary
                             )
                             .setTitle(
-                                `${gameEmoji} ${highGamemode} — High Test Ticket`
+                                `${gameEmoji} ${displayName} — High Test Ticket`
                             )
                             .setDescription(
                                 `Welcome ${interaction.user}!\n\n` +
@@ -2160,7 +2176,7 @@ module.exports = {
                                     name:
                                         '🎮 Gamemode',
                                     value:
-                                        `${gameEmoji} **${highGamemode}**`,
+                                        `${gameEmoji} **${displayName}**`,
                                     inline:
                                         true
                                 },
@@ -2246,7 +2262,7 @@ module.exports = {
 
                     return await interaction.reply({
                         content:
-                            `<:tick:1567480091267825714> Your **${highGamemode} High Test** ticket has been created: ${ticketChannel}`,
+                            `<:tick:1567480091267825714> Your **${config.gamemodeNames?.[highGamemode] || highGamemode} High Test** ticket has been created: ${ticketChannel}`,
                         flags:
                             MessageFlags.Ephemeral
                     });

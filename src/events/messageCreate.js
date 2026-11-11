@@ -11,7 +11,11 @@ const GAMEMODES = [
     'SMP',
     'UHC',
     'DiaPot',
-    'Crystal'
+    'Crystal',
+    'spearmace',
+    'diasmp',
+    'manhunt',
+    'shieldlessuhc'
 ];
 
 module.exports = {
@@ -121,8 +125,11 @@ module.exports = {
                     const tier = latestTiers.get(mode);
                     const emoji = getTierEmoji(tier);
 
+                    const displayName =
+                        config.gamemodeNames?.[mode] || mode;
+
                     lines.push(
-                        `${mode} — ${emoji ? `${emoji} ` : ''}**${tier}**`
+                        `${displayName} — ${emoji ? `${emoji} ` : ''}**${tier}**`
                     );
                 }
 

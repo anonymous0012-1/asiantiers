@@ -29,7 +29,11 @@ module.exports = {
                     { name: "NethPot", value: "NethPot" },
                     { name: "DiaPot", value: "DiaPot" },
                     { name: "SMP", value: "SMP" },
-                    { name: "UHC", value: "UHC" }
+                    { name: "UHC", value: "UHC" },
+                    { name: "SpearMace", value: "spearmace" },
+                    { name: "Diamond SMP", value: "diasmp" },
+                    { name: "Manhunt", value: "manhunt" },
+                    { name: "ShieldLess UHC", value: "shieldlessuhc" }
                 )
         ),
 

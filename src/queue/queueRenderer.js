@@ -56,6 +56,9 @@ module.exports = {
         const gameEmoji =
             emojis.gamemodes?.[gamemode] || '';
 
+        const displayName =
+            config.gamemodeNames?.[gamemode] || gamemode;
+
         // Custom tester emoji
         const testerEmoji =
             emojis.tester ||
@@ -79,7 +82,7 @@ module.exports = {
 
             const closedEmbed = new EmbedBuilder()
                 .setTitle(
-                    `${closeEmoji || '🔒'} ${gamemode} Queue Closed`
+                    `${closeEmoji || '🔒'} ${displayName} Queue Closed`
                 )
                 .setColor(0xED4245)
                 .setDescription(
@@ -203,7 +206,7 @@ module.exports = {
 
         const openEmbed = new EmbedBuilder()
             .setTitle(
-                `${gameEmoji} ${gamemode} Testing Queue`
+                `${gameEmoji} ${displayName} Testing Queue`
             )
             .setColor(0x5865F2)
             .setDescription(
