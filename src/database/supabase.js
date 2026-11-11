@@ -8,6 +8,13 @@ if (!supabaseUrl || !supabaseKey) {
     throw new Error('Missing Supabase credentials in .env');
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(supabaseUrl, supabaseKey, {
+    db: {
+        schema: 'public'
+    },
+    auth: {
+        persistSession: false
+    }
+});
 
 module.exports = supabase;

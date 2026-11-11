@@ -47,17 +47,55 @@ module.exports = {
             }
 
             // -----------------------------------------
+            // RESOLVE QUEUE ROW (ROBUST TO DB VALUE)
+            // -----------------------------------------
+
+            const { data: allQueues, error: fetchError } = await supabase
+                .from('queues')
+                .select('*');
+
+            if (fetchError) {
+                console.error('Queue fetch error:', fetchError);
+                return interaction.editReply({
+                    content:
+                        '<:crosss:1567480131713241108> Failed to fetch queue configuration.'
+                });
+            }
+
+            const queueRow = (allQueues || []).find(row =>
+                String(row.channel_id) === String(interaction.channelId)
+            ) || (allQueues || []).find(row =>
+                String(row.gamemode || '').trim().toLowerCase() ===
+                String(gamemode).trim().toLowerCase()
+            );
+
+            if (!queueRow) {
+                console.error(
+                    `[${gamemode}] NO QUEUE ROW FOUND IN SUPABASE.`,
+                    'Available:',
+                    (allQueues || []).map(row => JSON.stringify(row.gamemode))
+                );
+                return interaction.editReply({
+                    content:
+                        '<:crosss:1567480131713241108> No queue row found for this gamemode.'
+                });
+            }
+
+            const dbGamemode = queueRow.gamemode;
+
+            // -----------------------------------------
             // OPEN QUEUE
             // -----------------------------------------
 
-            const { error } = await supabase
+            const { data: updatedRows, error } = await supabase
                 .from('queues')
                 .update({
                     status: 'OPEN',
                     tester_id: interaction.user.id,
                     opened_at: new Date().toISOString()
                 })
-                .eq('gamemode', gamemode);
+                .eq('channel_id', String(interaction.channelId))
+                .select('gamemode');
 
             if (error) {
                 console.error(
@@ -65,6 +103,16 @@ module.exports = {
                     error
                 );
 
+                return interaction.editReply({
+                    content:
+                        '<:crosss:1567480131713241108> Failed to open the queue in the database.'
+                });
+            }
+
+            if (!updatedRows || updatedRows.length === 0) {
+                console.error(
+                    `[${gamemode}] Queue update affected 0 rows.`
+                );
                 return interaction.editReply({
                     content:
                         '<:crosss:1567480131713241108> Failed to open the queue in the database.'

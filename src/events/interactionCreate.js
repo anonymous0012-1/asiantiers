@@ -1078,7 +1078,14 @@ module.exports = {
                         });
                     }
 
-                    if (
+                    // Acknowledge early to avoid Discord interaction timeouts.
+                    if (!interaction.deferred && !interaction.replied) {
+                        await interaction.deferReply({
+                            flags: MessageFlags.Ephemeral
+                        });
+                    }
+
+﻿                    if (
                         interaction.member.roles.cache.has(
                             roleId
                         )
@@ -1091,7 +1098,7 @@ module.exports = {
                                 `Left ${gamemode} waitlist`
                             );
 
-                            return await interaction.reply({
+                            return await interaction.editReply({
                                 content:
                                     `<:tick:1567480091267825714> You left the **${gamemode}** waitlist.`,
                                 flags:
@@ -1105,7 +1112,7 @@ module.exports = {
                                 error
                             );
 
-                            return await interaction.reply({
+                            return await interaction.editReply({
                                 content:
                                     '<:crosss:1567480131713241108> Could not remove the waitlist role.',
                                 flags:
@@ -1121,7 +1128,7 @@ module.exports = {
                             `Joined ${gamemode} waitlist`
                         );
 
-                        return await interaction.reply({
+                        return await interaction.editReply({
                             content:
                                 `<:tick:1567480091267825714> You joined the **${gamemode}** waitlist!`,
                             flags:
@@ -1135,7 +1142,7 @@ module.exports = {
                             error
                         );
 
-                        return await interaction.reply({
+                        return await interaction.editReply({
                             content:
                                 '<:crosss:1567480131713241108> I could not give you the waitlist role. Please contact staff.',
                             flags:

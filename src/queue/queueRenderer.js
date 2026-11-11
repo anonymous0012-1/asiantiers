@@ -1,4 +1,3 @@
-
 const {
     EmbedBuilder,
     ActionRowBuilder,
@@ -10,6 +9,52 @@ const config = require('../config/config');
 const emojis = require('../config/emojis');
 const supabase = require('../database/supabase');
 
+function normalizeGamemode(value) {
+    return String(value ?? '').trim().toLowerCase();
+}
+
+async function fetchAllQueues() {
+    const { data, error } = await supabase
+        .from('queues')
+        .select('*');
+
+    if (error) {
+        throw error;
+    }
+
+    return data || [];
+}
+
+function resolveQueueRow(allQueues, gamemode, channelId) {
+    const requested = normalizeGamemode(gamemode);
+
+    // 1. Exact normalized gamemode match.
+    let row = allQueues.find(queue =>
+        normalizeGamemode(queue?.gamemode) === requested
+    );
+
+    // 2. Match by the configured Discord channel id.
+    if (!row && channelId) {
+        row = allQueues.find(queue =>
+            String(queue?.channel_id) === String(channelId)
+        );
+    }
+
+    // 3. Match by any configured channel whose mapped gamemode normalizes.
+    if (!row) {
+        const configuredChannelId = Object.keys(config.channels.queues || {})
+            .find(key => normalizeGamemode(config.channels.queues[key]) === requested);
+
+        if (configuredChannelId) {
+            row = allQueues.find(queue =>
+                String(queue?.channel_id) === String(configuredChannelId)
+            );
+        }
+    }
+
+    return row || null;
+}
+
 module.exports = {
 
     async updateQueuePanel(client, gamemode) {
@@ -20,29 +65,49 @@ module.exports = {
         try {
 
             // ==========================================
-            // 1. FETCH QUEUE FROM SUPABASE
+            // 1. FETCH ALL QUEUES (SAME SUPABASE CLIENT)
             // ==========================================
 
-            const { data: queue, error: queueError } = await supabase
-                .from('queues')
-                .select('*')
-                .eq('gamemode', gamemode)
-                .maybeSingle();
+            let allQueues;
 
-            if (queueError) {
+            try {
+                allQueues = await fetchAllQueues();
+            } catch (error) {
                 console.error(
                     `[${gamemode}] QUEUE DATABASE ERROR:`,
-                    queueError
+                    error
                 );
                 return;
             }
+
+            console.log(
+                `[${gamemode}] Available queue gamemodes in Supabase:`,
+                allQueues.map(queue => JSON.stringify(queue?.gamemode))
+            );
+
+            const configuredChannelId =
+                Object.keys(config.channels.queues || {})
+                    .find(key => config.channels.queues[key] === gamemode);
+
+            const queue = resolveQueueRow(
+                allQueues,
+                gamemode,
+                configuredChannelId
+            );
 
             if (!queue) {
                 console.error(
                     `[${gamemode}] NO QUEUE ROW FOUND IN SUPABASE.`
                 );
+                console.error(
+                    `[${gamemode}] Requested normalized gamemode:`,
+                    normalizeGamemode(gamemode)
+                );
                 return;
             }
+
+            // Use the database's actual gamemode value for DB operations.
+            const dbGamemode = queue.gamemode;
 
             console.log('Queue row found:', queue);
 
@@ -57,16 +122,9 @@ module.exports = {
             // 2. FETCH QUEUE MEMBERS
             // ==========================================
 
-            const { data: members, error: membersError } = await supabase
+            const { data: allMembers, error: membersError } = await supabase
                 .from('queue_members')
-                .select('*')
-                .eq('gamemode', gamemode)
-                .order('priority', {
-                    ascending: false
-                })
-                .order('joined_at', {
-                    ascending: true
-                });
+                .select('*');
 
             if (membersError) {
                 console.error(
@@ -76,7 +134,20 @@ module.exports = {
                 return;
             }
 
-            const queueMembers = members || [];
+            const requestedNorm = normalizeGamemode(gamemode);
+            const dbNorm = normalizeGamemode(dbGamemode);
+
+            const queueMembers = (allMembers || [])
+                .filter(member => {
+                    const memberNorm = normalizeGamemode(member?.gamemode);
+                    return memberNorm === requestedNorm || memberNorm === dbNorm;
+                })
+                .sort((a, b) => {
+                    const priorityDiff = Number(Boolean(b?.priority)) - Number(Boolean(a?.priority));
+                    if (priorityDiff !== 0) return priorityDiff;
+
+                    return new Date(a?.joined_at || 0) - new Date(b?.joined_at || 0);
+                });
 
             // ==========================================
             // 3. FETCH DISCORD CHANNEL
@@ -111,10 +182,14 @@ module.exports = {
             // ==========================================
 
             const gameEmoji =
-                emojis.gamemodes?.[gamemode] || '';
+                emojis.gamemodes?.[gamemode] ||
+                emojis.gamemodes?.[dbGamemode] ||
+                '';
 
             const displayName =
-                config.gamemodeNames?.[gamemode] || gamemode;
+                config.gamemodeNames?.[gamemode] ||
+                config.gamemodeNames?.[dbGamemode] ||
+                gamemode;
 
             const testerEmoji =
                 emojis.tester ||
@@ -330,7 +405,7 @@ module.exports = {
                 .update({
                     panel_message_id: panelMessage.id
                 })
-                .eq('gamemode', gamemode);
+                .eq('gamemode', dbGamemode);
 
             if (saveError) {
 

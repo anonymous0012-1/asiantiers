@@ -45,6 +45,31 @@ module.exports = {
         try {
 
             // =============================================
+            // RESOLVE QUEUE ROW
+            // =============================================
+
+            const { data: allQueues, error: fetchError } = await supabase
+                .from('queues')
+                .select('*');
+
+            if (fetchError) {
+                console.error('QUEUE FETCH ERROR:', fetchError);
+                return interaction.editReply({
+                    content:
+                        '<:crosss:1567480131713241108> Failed to fetch queue configuration.'
+                });
+            }
+
+            const queueRow = (allQueues || []).find(row =>
+                String(row.channel_id) === String(interaction.channelId)
+            ) || (allQueues || []).find(row =>
+                String(row.gamemode || '').trim().toLowerCase() ===
+                String(gamemode).trim().toLowerCase()
+            );
+
+            const dbGamemode = queueRow ? queueRow.gamemode : gamemode;
+
+            // =============================================
             // CLOSE QUEUE
             // =============================================
 
@@ -55,7 +80,7 @@ module.exports = {
                     tester_id: null,
                     closed_at: new Date().toISOString()
                 })
-                .eq('gamemode', gamemode);
+                .eq('channel_id', String(interaction.channelId));
 
             if (closeError) {
 
@@ -77,7 +102,7 @@ module.exports = {
             const { error: deleteError } = await supabase
                 .from('queue_members')
                 .delete()
-                .eq('gamemode', gamemode);
+                .in('gamemode', [gamemode, dbGamemode]);
 
             if (deleteError) {
 
