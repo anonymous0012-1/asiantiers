@@ -140,6 +140,12 @@ module.exports = {
                     .setCustomId('waitlist_shieldlessuhc')
                     .setLabel('ShieldLess UHC')
                     .setEmoji(emojis.gamemodes.shieldlessuhc)
+                    .setStyle(ButtonStyle.Success),
+
+                new ButtonBuilder()
+                    .setCustomId('waitlist_cart')
+                    .setLabel('Cart')
+                    .setEmoji(emojis.gamemodes.cart)
                     .setStyle(ButtonStyle.Success)
             );
 

@@ -96,7 +96,8 @@ module.exports = {
             'spearmace',
             'diasmp',
             'manhunt',
-            'shieldlessuhc'
+            'shieldlessuhc',
+            'cart'
         ];
 
         const rows = [];

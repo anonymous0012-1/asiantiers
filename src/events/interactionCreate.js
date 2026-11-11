@@ -1002,7 +1002,10 @@ module.exports = {
                             'manhunt',
 
                         waitlist_shieldlessuhc:
-                            'shieldlessuhc'
+                            'shieldlessuhc',
+
+                        waitlist_cart:
+                            'cart'
                     };
 
                     const gamemode =

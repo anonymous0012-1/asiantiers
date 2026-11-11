@@ -32,7 +32,8 @@ module.exports = {
             spearmace: '1569980464242888807',
             diasmp: '1569980494592868362',
             manhunt: '1569980553959055381',
-            shieldlessuhc: '1569980620623577158'
+            shieldlessuhc: '1569980620623577158',
+            cart: '1570075410417328129'
         }
     },
 
@@ -52,7 +53,8 @@ module.exports = {
             '1569964451015430164': 'spearmace',
             '1569964539070517320': 'diasmp',
             '1569964330336915527': 'manhunt',
-            '1569963678286225449': 'shieldlessuhc'
+            '1569963678286225449': 'shieldlessuhc',
+            '1570076107238150247': 'cart'
         },
     },
 
@@ -163,6 +165,15 @@ module.exports = {
             HT4: '1569974909160001616',
             LT3: '1569975054735908904',
             HT3: '1569974785948262472'
+        },
+
+        cart: {
+            LT5: '1570074898351530086',
+            HT5: '1570074965469036625',
+            LT4: '1570075008275845250',
+            HT4: '1570075190799638600',
+            LT3: '1570075071979196456',
+            HT3: '1570075129336303728'
         }
     },
 
@@ -171,6 +182,7 @@ module.exports = {
         spearmace: 'SpearMace',
         diasmp: 'Diamond SMP',
         manhunt: 'Manhunt',
-        shieldlessuhc: 'ShieldLess UHC'
+        shieldlessuhc: 'ShieldLess UHC',
+        cart: 'Cart'
     }
 };

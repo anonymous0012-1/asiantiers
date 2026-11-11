@@ -11,7 +11,8 @@ module.exports = {
         spearmace: '<:spearmace:1569963562967760936>',
         diasmp: '<:diasmp:1569963433124823101>',
         manhunt: '<:manhunt:1569963535746859068>',
-        shieldlessuhc: '<:shieldless:1569963509540978699>'
+        shieldlessuhc: '<:shieldless:1569963509540978699>',
+        cart: '<:cart:1569963469401493616>'
     },
 
     tester: '<:verified_tester:1567495110915133460>',

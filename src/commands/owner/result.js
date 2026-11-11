@@ -49,7 +49,8 @@ module.exports = {
                     { name: 'SpearMace', value: 'spearmace' },
                     { name: 'Diamond SMP', value: 'diasmp' },
                     { name: 'Manhunt', value: 'manhunt' },
-                    { name: 'ShieldLess UHC', value: 'shieldlessuhc' }
+                    { name: 'ShieldLess UHC', value: 'shieldlessuhc' },
+                    { name: 'Cart', value: 'cart' }
                 )
         ),
 
