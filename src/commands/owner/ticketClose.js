@@ -18,7 +18,7 @@ module.exports = {
 
         if (!perms.isTester(interaction.member)) {
             return interaction.reply({
-                content: '<:crosss:1567480131713241108> Only testers can use this command.',
+                content: '<:crosss:1570104768628531290> Only testers can use this command.',
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -29,7 +29,7 @@ module.exports = {
         ) {
             return interaction.reply({
                 content:
-                    '<:crosss:1567480131713241108> This command can only be used inside a testing ticket.',
+                    '<:crosss:1570104768628531290> This command can only be used inside a testing ticket.',
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -59,7 +59,7 @@ module.exports = {
 
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Failed to complete the testing session.'
+                        '<:crosss:1570104768628531290> Failed to complete the testing session.'
                 });
             }
 
@@ -71,7 +71,7 @@ const transcriptChannel =
             if (!transcriptChannel) {
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Transcript channel was not found.'
+                        '<:crosss:1570104768628531290> Transcript channel was not found.'
                 });
             }
 
@@ -112,7 +112,7 @@ const transcriptChannel =
             let transcript = '';
 
             transcript +=
-                `AsianTiers Testing Ticket Transcript\n`;
+                `UniversalTiers Testing Ticket Transcript\n`;
 
             transcript +=
                 `====================================\n\n`;
@@ -194,7 +194,7 @@ const transcriptChannel =
                     )
                     .setFooter({
                         text:
-                            'AsianTiers • Minecraft Tier Testing'
+                            'UniversalTiers • Minecraft Tier Testing'
                     })
                     .setTimestamp();
 
@@ -211,7 +211,7 @@ const transcriptChannel =
 
             await interaction.editReply({
                 content:
-                    '<:tick:1567480091267825714> Testing session completed. Transcript saved. Deleting ticket...'
+                    '<:tick:1570104808055111742> Testing session completed. Transcript saved. Deleting ticket...'
             });
 
             await ticketChannel.delete(
@@ -232,7 +232,7 @@ const transcriptChannel =
 
                 await interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Failed to create transcript or delete the ticket.'
+                        '<:crosss:1570104768628531290> Failed to create transcript or delete the ticket.'
                 }).catch(() => {});
             }
         }

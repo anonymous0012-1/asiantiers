@@ -1,7 +1,7 @@
 {
-  "name": "Asiantestingbot",
+  "name": "Universaltestingbot",
   "version": "1.0.0",
-  "description": "Production-ready Tier Testing Bot for AsianTiers",
+  "description": "Production-ready Tier Testing Bot for UniversalTiers",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

@@ -18,7 +18,7 @@ module.exports = {
     async execute(interaction) {
         if (interaction.user.id !== config.roles.ownerId) {
             return interaction.reply({
-                content: '<:crosss:1567480131713241108> Only the bot owner can use this command.',
+                content: '<:crosss:1570104768628531290> Only the bot owner can use this command.',
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -31,7 +31,7 @@ module.exports = {
             !channel.topic?.includes('HT_USER:')
         ) {
             return interaction.reply({
-                content: '<:crosss:1567480131713241108> Use this command inside a High Test ticket.',
+                content: '<:crosss:1570104768628531290> Use this command inside a High Test ticket.',
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -54,13 +54,13 @@ module.exports = {
             await channel.permissionOverwrites.delete(player.id);
 
             return interaction.editReply({
-                content: `<:tick:1567480091267825714> ${player} has been removed from this ticket.`
+                content: `<:tick:1570104808055111742> ${player} has been removed from this ticket.`
             });
         } catch (error) {
             console.error('HIGH TEST REMOVE ERROR:', error);
 
             return interaction.editReply({
-                content: "<:crosss:1567480131713241108> Failed to remove the player's ticket access. Check the bot permissions."
+                content: "<:crosss:1570104768628531290> Failed to remove the player's ticket access. Check the bot permissions."
             });
         }
     }

@@ -38,7 +38,7 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 app.get('/', (req, res) => {
-    res.status(200).send('AsianTiers Bot is online!');
+    res.status(200).send('UniversalTiers Bot is online!');
 });
 
 app.get('/health', (req, res) => {
@@ -73,7 +73,7 @@ for (const folder of commandFolders) {
 
         if ('data' in command && 'execute' in command) {
             client.commands.set(command.data.name, command);
-            console.log(`<:tick:1567480091267825714> Loaded Command: ${command.data.name}`);
+            console.log(`<:tick:1570104808055111742> Loaded Command: ${command.data.name}`);
         }
     }
 }
@@ -98,7 +98,7 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args));
     }
 
-    console.log(`<:tick:1567480091267825714> Loaded Event: ${event.name}`);
+    console.log(`<:tick:1570104808055111742> Loaded Event: ${event.name}`);
 }
 
 // ==========================================
@@ -107,8 +107,8 @@ for (const file of eventFiles) {
 
 client.login(process.env.TOKEN)
     .then(() => {
-        console.log('🤖 AsianTiers Bot Logged In');
+        console.log('🤖 UniversalTiers Bot Logged In');
     })
     .catch(error => {
-        console.error('<:crosss:1567480131713241108> Discord Login Failed:', error);
+        console.error('<:crosss:1570104768628531290> Discord Login Failed:', error);
     });

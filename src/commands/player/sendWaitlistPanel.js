@@ -13,16 +13,16 @@ module.exports = {
 
     data: new SlashCommandBuilder()
         .setName('sendwaitlistpanel')
-        .setDescription('Send the AsianTiers testing waitlist panel')
+        .setDescription('Send the UniversalTiers testing waitlist panel')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
 
         const embed = new EmbedBuilder()
-            .setTitle('📋 AsianTiers — Testing Waitlist')
+            .setTitle('<:updates:1570104881262366861> UniversalTiers — Testing Waitlist')
             .setColor(0x8B0000)
             .setDescription(
-                '**Welcome to the AsianTiers Testing System!**\n\n' +
+                '**Welcome to the UniversalTiers Testing System!**\n\n' +
 
                 '**1. Register Your Profile**\n' +
                 'Click **Register / Update Profile** and enter your Minecraft IGN, Region and Account Type.\n\n' +
@@ -36,10 +36,10 @@ module.exports = {
                 '**Regions**\n' +
                 '`NA` • `EU` • `AS/AU` • `SA`\n\n' +
 
-                '🔴 **Important:** You must have a registered profile before joining a waitlist.'
+                '<:POLL:1570104973407027230> **Important:** You must have a registered profile before joining a waitlist.'
             )
             .setFooter({
-                text: 'AsianTiers • Minecraft Tier Testing'
+                text: 'UniversalTiers • Minecraft Tier Testing'
             })
             .setTimestamp();
 
@@ -164,7 +164,7 @@ module.exports = {
         });
 
         await interaction.reply({
-            content: '<:tick:1567480091267825714> Waitlist panel sent.',
+            content: '<:tick:1570104808055111742> Waitlist panel sent.',
             ephemeral: true
         });
     }

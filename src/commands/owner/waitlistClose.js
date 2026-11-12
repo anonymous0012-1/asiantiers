@@ -19,7 +19,7 @@ module.exports = {
         if (!perms.isTester(interaction.member)) {
 
             return interaction.reply({
-                content: '<:crosss:1567480131713241108> Only testers can use this command.',
+                content: '<:crosss:1570104768628531290> Only testers can use this command.',
                 flags: 64
             });
         }
@@ -32,7 +32,7 @@ module.exports = {
 
             return interaction.reply({
                 content:
-                    '<:crosss:1567480131713241108> This channel is not a registered testing queue.',
+                    '<:crosss:1570104768628531290> This channel is not a registered testing queue.',
                 flags: 64
             });
         }
@@ -56,7 +56,7 @@ module.exports = {
                 console.error('QUEUE FETCH ERROR:', fetchError);
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Failed to fetch queue configuration.'
+                        '<:crosss:1570104768628531290> Failed to fetch queue configuration.'
                 });
             }
 
@@ -91,7 +91,7 @@ module.exports = {
 
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Failed to close the queue.'
+                        '<:crosss:1570104768628531290> Failed to close the queue.'
                 });
             }
 
@@ -142,7 +142,7 @@ module.exports = {
 
             return interaction.editReply({
                 content:
-                    `🔒 **${gamemode}** queue has been closed.\n` +
+                    `<:close:1570105019326275604> **${gamemode}** queue has been closed.\n` +
                     `🗑️ All players were removed from the queue.`
             });
 
@@ -160,14 +160,14 @@ module.exports = {
 
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Something went wrong while closing the queue.'
+                        '<:crosss:1570104768628531290> Something went wrong while closing the queue.'
                 }).catch(() => {});
 
             }
 
             return interaction.reply({
                 content:
-                    '<:crosss:1567480131713241108> Something went wrong while closing the queue.',
+                    '<:crosss:1570104768628531290> Something went wrong while closing the queue.',
                 flags: 64
             }).catch(() => {});
         }

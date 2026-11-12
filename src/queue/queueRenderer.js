@@ -200,7 +200,7 @@ module.exports = {
                 emojis.ui?.queueopen || '🟢';
 
             const closeEmoji =
-                emojis.ui?.queueclose || '🔒';
+                emojis.ui?.queueclose || '<:close:1570105019326275604>';
 
             // ==========================================
             // 5. BUILD QUEUE EMBED AND BUTTONS
@@ -221,7 +221,7 @@ module.exports = {
                     )
                     .addFields(
                         {
-                            name: '📋 Reason',
+                            name: '<:updates:1570104881262366861> Reason',
                             value: 'Queue closed by command',
                             inline: false
                         },
@@ -236,7 +236,7 @@ module.exports = {
                         }
                     )
                     .setFooter({
-                        text: 'AsianTiers • Thank you for testing!'
+                        text: 'UniversalTiers • Thank you for testing!'
                     });
 
                 row = new ActionRowBuilder().addComponents(
@@ -311,7 +311,7 @@ module.exports = {
                         }
                     )
                     .setFooter({
-                        text: 'AsianTiers • Testing Queue'
+                        text: 'UniversalTiers • Testing Queue'
                     })
                     .setTimestamp();
 

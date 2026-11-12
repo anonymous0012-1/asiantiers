@@ -22,7 +22,7 @@ module.exports = {
     async execute(interaction) {
         if (interaction.user.id !== config.roles.ownerId) {
             return interaction.reply({
-                content: '<:crosss:1567480131713241108> Only the bot owner can use this command.',
+                content: '<:crosss:1570104768628531290> Only the bot owner can use this command.',
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -35,7 +35,7 @@ module.exports = {
             !channel.topic?.includes('HT_USER:')
         ) {
             return interaction.reply({
-                content: '<:crosss:1567480131713241108> Use this command inside a High Test ticket.',
+                content: '<:crosss:1570104768628531290> Use this command inside a High Test ticket.',
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -44,7 +44,7 @@ module.exports = {
 
         if (role.id === interaction.guild.id) {
             return interaction.reply({
-                content: '<:crosss:1567480131713241108> You cannot add @everyone to a ticket.',
+                content: '<:crosss:1570104768628531290> You cannot add @everyone to a ticket.',
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -59,14 +59,14 @@ module.exports = {
             });
 
             return interaction.reply({
-                content: `<:tick:1567480091267825714> ${role} can now access this High Test ticket.`,
+                content: `<:tick:1570104808055111742> ${role} can now access this High Test ticket.`,
                 flags: MessageFlags.Ephemeral
             });
         } catch (error) {
             console.error('HIGH TEST ADDROLE ERROR:', error);
 
             return interaction.reply({
-                content: '<:crosss:1567480131713241108> Failed to update ticket permissions. Check the bot permissions.',
+                content: '<:crosss:1570104768628531290> Failed to update ticket permissions. Check the bot permissions.',
                 flags: MessageFlags.Ephemeral
             });
         }

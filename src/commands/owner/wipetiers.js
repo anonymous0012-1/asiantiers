@@ -26,7 +26,7 @@ module.exports = {
 
         if (interaction.user.id !== process.env.OWNER_ID) {
             return interaction.reply({
-                content: "<:crosss:1567480131713241108> Only the bot owner can use this command.",
+                content: "<:crosss:1570104768628531290> Only the bot owner can use this command.",
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -47,7 +47,7 @@ module.exports = {
             if (!/^\d{17,20}$/.test(userId)) {
                 return interaction.editReply({
                     content:
-                        "<:crosss:1567480131713241108> Invalid Discord User ID.\n\nExample: `123456789012345678`"
+                        "<:crosss:1570104768628531290> Invalid Discord User ID.\n\nExample: `123456789012345678`"
                 });
             }
 
@@ -73,14 +73,14 @@ module.exports = {
 
                 return interaction.editReply({
                     content:
-                        "<:crosss:1567480131713241108> Database error while finding the player."
+                        "<:crosss:1570104768628531290> Database error while finding the player."
                 });
             }
 
             if (!player) {
                 return interaction.editReply({
                     content:
-                        `<:crosss:1567480131713241108> No player profile was found for Discord ID:\n\`${userId}\``
+                        `<:crosss:1570104768628531290> No player profile was found for Discord ID:\n\`${userId}\``
                 });
             }
 
@@ -137,7 +137,7 @@ module.exports = {
                             } catch (roleError) {
 
                                 console.error(
-                                    `<:crosss:1567480131713241108> Failed removing role ${roleId}:`,
+                                    `<:crosss:1570104768628531290> Failed removing role ${roleId}:`,
                                     roleError
                                 );
                             }
@@ -165,24 +165,24 @@ module.exports = {
             if (!process.env.WEBSITE_API_URL) {
 
                 console.error(
-                    "<:crosss:1567480131713241108> WEBSITE_API_URL is missing from .env"
+                    "<:crosss:1570104768628531290> WEBSITE_API_URL is missing from .env"
                 );
 
                 return interaction.editReply({
                     content:
-                        "<:crosss:1567480131713241108> WEBSITE_API_URL is missing from `.env`."
+                        "<:crosss:1570104768628531290> WEBSITE_API_URL is missing from `.env`."
                 });
             }
 
             if (!process.env.WEBSITE_BOT_SECRET) {
 
                 console.error(
-                    "<:crosss:1567480131713241108> WEBSITE_BOT_SECRET is missing from .env"
+                    "<:crosss:1570104768628531290> WEBSITE_BOT_SECRET is missing from .env"
                 );
 
                 return interaction.editReply({
                     content:
-                        "<:crosss:1567480131713241108> WEBSITE_BOT_SECRET is missing from `.env`."
+                        "<:crosss:1570104768628531290> WEBSITE_BOT_SECRET is missing from `.env`."
                 });
             }
 
@@ -232,7 +232,7 @@ module.exports = {
                         websiteFailed++;
 
                         console.error(
-                            `<:crosss:1567480131713241108> Website Sync Failed [${gamemode}]`,
+                            `<:crosss:1570104768628531290> Website Sync Failed [${gamemode}]`,
                             response.status,
                             responseText
                         );
@@ -242,7 +242,7 @@ module.exports = {
                         websiteSuccess++;
 
                         console.log(
-                            `<:tick:1567480091267825714> Website synced: ${player.ign} → ${gamemode} → Unranked`
+                            `<:tick:1570104808055111742> Website synced: ${player.ign} → ${gamemode} → Unranked`
                         );
                     }
 
@@ -251,7 +251,7 @@ module.exports = {
                     websiteFailed++;
 
                     console.error(
-                        `<:crosss:1567480131713241108> Website Sync Error (${gamemode}):`,
+                        `<:crosss:1570104768628531290> Website Sync Error (${gamemode}):`,
                         error
                     );
                 }
@@ -304,14 +304,14 @@ module.exports = {
 
                 await interaction.editReply({
                     content:
-                        "<:crosss:1567480131713241108> An error occurred while wiping the player's tiers."
+                        "<:crosss:1570104768628531290> An error occurred while wiping the player's tiers."
                 }).catch(() => {});
 
             } else {
 
                 await interaction.reply({
                     content:
-                        "<:crosss:1567480131713241108> An error occurred while wiping the player's tiers.",
+                        "<:crosss:1570104768628531290> An error occurred while wiping the player's tiers.",
                     flags: MessageFlags.Ephemeral
                 }).catch(() => {});
             }

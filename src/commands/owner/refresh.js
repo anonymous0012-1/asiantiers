@@ -24,7 +24,7 @@ module.exports = {
         if (!gamemode) {
             return interaction.reply({
                 content:
-                    '<:crosss:1567480131713241108> This channel is not a AsianTiers queue channel.',
+                    '<:crosss:1570104768628531290> This channel is not a UniversalTiers queue channel.',
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -57,7 +57,7 @@ module.exports = {
 
                 await interaction.reply({
                     content:
-                        '<:crosss:1567480131713241108> Failed to refresh the queue panel.',
+                        '<:crosss:1570104768628531290> Failed to refresh the queue panel.',
                     flags: MessageFlags.Ephemeral
                 });
 

@@ -28,7 +28,7 @@ module.exports = {
             console.error("Daily Tests Error:", error);
 
             return interaction.editReply({
-                content: "<:crosss:1567480131713241108> Failed to load today's testing statistics."
+                content: "<:crosss:1570104768628531290> Failed to load today's testing statistics."
             });
         }
 
@@ -108,7 +108,7 @@ module.exports = {
                 }
             )
             .setFooter({
-                text: "AsianTiers • Daily Tests"
+                text: "UniversalTiers • Daily Tests"
             })
             .setTimestamp();
 

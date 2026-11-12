@@ -142,7 +142,7 @@ module.exports = {
                     })
                     .setDescription(lines.join('\n'))
                     .setFooter({
-                        text: 'AsianTiers • Player Tiers'
+                        text: 'UniversalTiers • Player Tiers'
                     });
 
                 return message.reply({
@@ -193,7 +193,7 @@ module.exports = {
                     }
                 )
                 .setFooter({
-                    text: 'AsianTiers • Player Information'
+                    text: 'UniversalTiers • Player Information'
                 })
                 .setTimestamp();
 

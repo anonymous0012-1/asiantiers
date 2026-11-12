@@ -38,7 +38,7 @@ module.exports = {
             console.error("Tester Stats Error:", error);
 
             return interaction.editReply({
-                content: "<:crosss:1567480131713241108> Failed to load tester statistics."
+                content: "<:crosss:1570104768628531290> Failed to load tester statistics."
             });
         }
 
@@ -205,7 +205,7 @@ module.exports = {
                     inline: false
                 },
                 {
-                    name: "📋 Detailed Breakdown",
+                    name: "<:updates:1570104881262366861> Detailed Breakdown",
                     value:
                         detailedText.length > 1024
                             ? detailedText.substring(0, 1020) + "..."
@@ -214,7 +214,7 @@ module.exports = {
                 }
             )
             .setFooter({
-                text: "AsianTiers • Tester Statistics"
+                text: "UniversalTiers • Tester Statistics"
             })
             .setTimestamp();
 

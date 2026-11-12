@@ -26,7 +26,7 @@ module.exports = {
         ) {
             return interaction.reply({
                 content:
-                    '<:crosss:1567480131713241108> Only the bot owner can use this command.',
+                    '<:crosss:1570104768628531290> Only the bot owner can use this command.',
                 ephemeral: true
             });
         }
@@ -41,7 +41,7 @@ module.exports = {
 
         // EXACT CUSTOM TROPHY EMOJI
         const trophyEmoji =
-            '<:trophy~2:1567483693130584136>';
+            '<:T1:1544576709733519380>';
 
         // ==========================================
         // EMBED
@@ -52,7 +52,7 @@ module.exports = {
                 .setColor(0x5865F2)
 
                 .setAuthor({
-                    name: 'AsianTiers | HIGH TESTS — NOW OPEN',
+                    name: 'UniversalTiers | HIGH TESTS — NOW OPEN',
                     iconURL:
                         'https://cdn.discordapp.com/emojis/1534871592730099743.png'
                 })
@@ -160,7 +160,7 @@ module.exports = {
 
         return interaction.reply({
             content:
-                '<:tick:1567480091267825714> High Tests panel sent.',
+                '<:tick:1570104808055111742> High Tests panel sent.',
             ephemeral: true
         });
     }

@@ -28,7 +28,7 @@ module.exports = {
 
             if (!perms.isTester(interaction.member)) {
                 return interaction.editReply({
-                    content: '<:crosss:1567480131713241108> Only testers can use this command.'
+                    content: '<:crosss:1570104768628531290> Only testers can use this command.'
                 });
             }
 
@@ -42,7 +42,7 @@ module.exports = {
             if (!gamemode) {
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> This channel is not a registered queue channel.'
+                        '<:crosss:1570104768628531290> This channel is not a registered queue channel.'
                 });
             }
 
@@ -58,7 +58,7 @@ module.exports = {
                 console.error('Queue fetch error:', fetchError);
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Failed to fetch queue configuration.'
+                        '<:crosss:1570104768628531290> Failed to fetch queue configuration.'
                 });
             }
 
@@ -77,7 +77,7 @@ module.exports = {
                 );
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> No queue row found for this gamemode.'
+                        '<:crosss:1570104768628531290> No queue row found for this gamemode.'
                 });
             }
 
@@ -105,7 +105,7 @@ module.exports = {
 
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Failed to open the queue in the database.'
+                        '<:crosss:1570104768628531290> Failed to open the queue in the database.'
                 });
             }
 
@@ -115,7 +115,7 @@ module.exports = {
                 );
                 return interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Failed to open the queue in the database.'
+                        '<:crosss:1570104768628531290> Failed to open the queue in the database.'
                 });
             }
 
@@ -167,7 +167,7 @@ try {
             if (interaction.deferred) {
                 await interaction.editReply({
                     content:
-                        '<:crosss:1567480131713241108> Something went wrong while opening the queue.'
+                        '<:crosss:1570104768628531290> Something went wrong while opening the queue.'
                 }).catch(() => {});
             }
         }
