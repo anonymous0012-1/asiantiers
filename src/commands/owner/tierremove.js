@@ -25,8 +25,6 @@ module.exports = {
                     { name: "Sword", value: "Sword" },
                     { name: "Mace", value: "Mace" },
                     { name: "Axe", value: "Axe" },
-                    { name: "Crystal", value: "Crystal" },
-                    { name: "NethPot", value: "NethPot" },
                     { name: "DiaPot", value: "DiaPot" },
                     { name: "SMP", value: "SMP" },
                     { name: "UHC", value: "UHC" },
@@ -41,7 +39,7 @@ module.exports = {
     async execute(interaction) {
 
         // OWNER ONLY
-        if (interaction.user.id !== process.env.OWNER_ID) {
+        if (interaction.user.id !== config.roles.ownerId) {
             return interaction.reply({
                 content: "<:crosss:1570104768628531290> Only the bot owner can use this command.",
                 flags: 64

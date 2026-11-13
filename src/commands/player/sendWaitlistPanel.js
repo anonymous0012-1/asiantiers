@@ -63,12 +63,6 @@ module.exports = {
             .addComponents(
 
                 new ButtonBuilder()
-                    .setCustomId('waitlist_nethpot')
-                    .setLabel('NethPot')
-                    .setEmoji(emojis.gamemodes.NethPot)
-                    .setStyle(ButtonStyle.Success),
-
-                new ButtonBuilder()
                     .setCustomId('waitlist_mace')
                     .setLabel('Mace')
                     .setEmoji(emojis.gamemodes.Mace)
@@ -84,12 +78,6 @@ module.exports = {
                     .setCustomId('waitlist_axe')
                     .setLabel('Axe')
                     .setEmoji(emojis.gamemodes.Axe)
-                    .setStyle(ButtonStyle.Success),
-
-                new ButtonBuilder()
-                    .setCustomId('waitlist_crystal')
-                    .setLabel('Crystal')
-                    .setEmoji(emojis.gamemodes.Crystal)
                     .setStyle(ButtonStyle.Success)
             );
 

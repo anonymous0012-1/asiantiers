@@ -41,8 +41,6 @@ module.exports = {
                     { name: 'Sword', value: 'Sword' },
                     { name: 'Mace', value: 'Mace' },
                     { name: 'Axe', value: 'Axe' },
-                    { name: 'Crystal', value: 'Crystal' },
-                    { name: 'NethPot', value: 'NethPot' },
                     { name: 'DiaPot', value: 'DiaPot' },
                     { name: 'SMP', value: 'SMP' },
                     { name: 'UHC', value: 'UHC' },

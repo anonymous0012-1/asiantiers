@@ -986,12 +986,6 @@ module.exports = {
                         waitlist_mace:
                             'Mace',
 
-                        waitlist_crystal:
-                            'Crystal',
-
-                        waitlist_nethpot:
-                            'NethPot',
-
                         waitlist_spearmace:
                             'spearmace',
 
