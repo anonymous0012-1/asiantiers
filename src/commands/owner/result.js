@@ -23,12 +23,20 @@ module.exports = {
                 .setDescription('New Tier')
                 .setRequired(true)
                 .addChoices(
+                    { name: 'HT1', value: 'HT1' },
+                    { name: 'LT1', value: 'LT1' },
+                    { name: 'HT2', value: 'HT2' },
+                    { name: 'LT2', value: 'LT2' },
                     { name: 'HT3', value: 'HT3' },
                     { name: 'LT3', value: 'LT3' },
                     { name: 'HT4', value: 'HT4' },
                     { name: 'LT4', value: 'LT4' },
                     { name: 'HT5', value: 'HT5' },
-                    { name: 'LT5', value: 'LT5' }
+                    { name: 'LT5', value: 'LT5' },
+                    { name: 'RHT1', value: 'RHT1' },
+                    { name: 'RLT1', value: 'RLT1' },
+                    { name: 'RHT2', value: 'RHT2' },
+                    { name: 'RLT2', value: 'RLT2' }
                 )
         )
 
@@ -149,24 +157,36 @@ module.exports = {
             // =====================================================
 
             const gamemodeTiers =
-                config.tiers?.[gamemode];
+                config.tiers?.[gamemode] || {};
 
-            if (!gamemodeTiers) {
-
-                return interaction.editReply({
-                    content:
-                        `<:crosss:1570104768628531290> Tier roles for **${gamemode}** are not configured.`
-                });
-            }
-
-            const newRoleId =
-                gamemodeTiers[tier];
+            // Existing tiers are stored in config. New tiers are stored in Supabase.
+            let newRoleId = gamemodeTiers[tier];
 
             if (!newRoleId) {
+                try {
+                    const { data: tierRoleRow, error: tierRoleError } = await supabase
+                        .from('tier_roles')
+                        .select('role_id')
+                        .eq('gamemode', gamemode)
+                        .eq('tier', tier)
+                        .maybeSingle();
 
+                    if (tierRoleError) throw tierRoleError;
+                    newRoleId = tierRoleRow?.role_id || null;
+                } catch (error) {
+                    console.error('RP TIER ROLE LOOKUP ERROR:', error);
+
+                    return interaction.editReply({
+                        content:
+                            `<:crosss:1570104768628531290> Failed to read the tier role mapping for **${tier} ${gamemode}**.`
+                    });
+                }
+            }
+
+            if (!newRoleId) {
                 return interaction.editReply({
                     content:
-                        `<:crosss:1570104768628531290> Role for **${tier} ${gamemode}** was not found.`
+                        `<:crosss:1570104768628531290> Role for **${tier} ${gamemode}** is not configured. Run \`/setuptierroles\` for the new tiers.`
                 });
             }
 
@@ -183,8 +203,25 @@ module.exports = {
             // REMOVE OLD TIER ROLES
             // =====================================================
 
-            const allGamemodeRoles =
-                Object.values(gamemodeTiers);
+            // Collect every tier role for this gamemode from both config and Supabase.
+            let allGamemodeRoles = Object.values(gamemodeTiers);
+
+            try {
+                const { data: dbGamemodeRoles, error: dbGamemodeRolesError } = await supabase
+                    .from('tier_roles')
+                    .select('role_id')
+                    .eq('gamemode', gamemode);
+
+                if (dbGamemodeRolesError) throw dbGamemodeRolesError;
+
+                allGamemodeRoles = allGamemodeRoles.concat(
+                    (dbGamemodeRoles || []).map(row => row.role_id).filter(Boolean)
+                );
+            } catch (error) {
+                console.error('RP GAMEMODE ROLE LOOKUP ERROR:', error);
+            }
+
+            allGamemodeRoles = [...new Set(allGamemodeRoles)];
 
             const rolesUserHas =
                 allGamemodeRoles.filter(roleId =>

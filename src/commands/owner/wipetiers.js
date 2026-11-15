@@ -109,38 +109,44 @@ module.exports = {
 
             if (member) {
 
+                const allTierRoleIds = new Set();
+
                 for (
                     const gamemode
                     of Object.keys(config.tiers || {})
                 ) {
+                    for (const roleId of Object.values(config.tiers[gamemode] || {}).filter(Boolean)) {
+                        allTierRoleIds.add(roleId);
+                    }
+                }
 
-                    const tierRoles =
-                        Object.values(
-                            config.tiers[gamemode]
-                        ).filter(Boolean);
+                try {
+                    const { data: dbTierRoles, error: dbTierRolesError } = await supabase
+                        .from('tier_roles')
+                        .select('role_id');
 
-                    for (const roleId of tierRoles) {
+                    if (dbTierRolesError) throw dbTierRolesError;
 
-                        if (
-                            member.roles.cache.has(roleId)
-                        ) {
+                    for (const row of dbTierRoles || []) {
+                        if (row.role_id) allTierRoleIds.add(row.role_id);
+                    }
+                } catch (error) {
+                    console.error('WIPE TIERS DB ROLE LOOKUP ERROR:', error);
+                }
 
-                            try {
-
-                                await member.roles.remove(
-                                    roleId,
-                                    "All tiers wiped by bot owner"
-                                );
-
-                                removed++;
-
-                            } catch (roleError) {
-
-                                console.error(
-                                    `<:crosss:1570104768628531290> Failed removing role ${roleId}:`,
-                                    roleError
-                                );
-                            }
+                for (const roleId of allTierRoleIds) {
+                    if (member.roles.cache.has(roleId)) {
+                        try {
+                            await member.roles.remove(
+                                roleId,
+                                "All tiers wiped by bot owner"
+                            );
+                            removed++;
+                        } catch (roleError) {
+                            console.error(
+                                `<:crosss:1570104768628531290> Failed removing role ${roleId}:`,
+                                roleError
+                            );
                         }
                     }
                 }

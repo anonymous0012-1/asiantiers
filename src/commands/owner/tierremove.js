@@ -65,20 +65,30 @@ module.exports = {
         }
 
         // Get gamemode roles
-        const gamemodeTiers = config.tiers?.[gamemode];
-
-        if (!gamemodeTiers) {
-            return interaction.editReply({
-                content: `<:crosss:1570104768628531290> Tier roles for **${gamemode}** are not configured.`
-            });
-        }
+        const gamemodeTiers = config.tiers?.[gamemode] || {};
 
         // Get Discord member
         const member = await interaction.guild.members.fetch(user.id);
 
-        // Remove every tier role for this gamemode
-        const tierRoles = Object.values(gamemodeTiers)
-            .filter(Boolean);
+        // Remove every tier role for this gamemode, including Supabase-backed new tiers.
+        const tierRoles = [...new Set(Object.values(gamemodeTiers).filter(Boolean))];
+
+        try {
+            const { data: dbGamemodeRoles, error: dbGamemodeRolesError } = await supabase
+                .from('tier_roles')
+                .select('role_id')
+                .eq('gamemode', gamemode);
+
+            if (dbGamemodeRolesError) throw dbGamemodeRolesError;
+
+            for (const row of dbGamemodeRoles || []) {
+                if (row.role_id && !tierRoles.includes(row.role_id)) {
+                    tierRoles.push(row.role_id);
+                }
+            }
+        } catch (error) {
+            console.error('TIER REMOVE DB ROLE LOOKUP ERROR:', error);
+        }
 
         let removed = 0;
 
