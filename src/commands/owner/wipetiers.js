@@ -6,6 +6,8 @@ const {
 const config = require("../../config/config");
 const supabase = require("../../database/supabase");
 const fetch = require("node-fetch");
+const tierSystem = require("../../utils/tierSystem");
+const playerPeak = require("../../utils/playerPeak");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -83,6 +85,8 @@ module.exports = {
                         `<:crosss:1570104768628531290> No player profile was found for Discord ID:\n\`${userId}\``
                 });
             }
+
+            const peakTiers = await playerPeak.getPeakTiers(userId);
 
             // ==========================================
             // GET DISCORD MEMBER
@@ -214,12 +218,23 @@ module.exports = {
 
                                     // Discord ID
                                     userId: userId,
+                                    discordId: userId,
 
                                     // Existing website profile
                                     ign: player.ign,
 
                                     // Remove tier
                                     tier: "Unranked",
+                                    currentTier: "Unranked",
+                                    peakTier: peakTiers?.[gamemode]
+                                        ? tierSystem.normalizeTier(peakTiers[gamemode])
+                                        : null,
+                                    points: 0,
+                                    currentTierPoints: 0,
+                                    retired: false,
+                                    retirementStatus: false,
+                                    retiredTier: null,
+                                    retiredPoints: 0,
 
                                     gamemode:
                                         gamemode.toLowerCase(),

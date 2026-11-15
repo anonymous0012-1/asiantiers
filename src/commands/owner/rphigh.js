@@ -4,6 +4,8 @@ const emojis = require('../../config/emojis');
 const supabase = require('../../database/supabase');
 const perms = require('../../utils/permissions');
 const fetch = require('node-fetch');
+const tierSystem = require('../../utils/tierSystem');
+const playerPeak = require('../../utils/playerPeak');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -143,6 +145,15 @@ module.exports = {
 
             const previousTier =
                 previousResult?.new_tier || 'Unranked';
+
+            const existingPeakTiers = await playerPeak.getPeakTiers(user.id);
+            let existingPeak = existingPeakTiers?.[gamemode]
+                ? tierSystem.normalizeTier(existingPeakTiers[gamemode])
+                : null;
+
+            if (!existingPeak && tierSystem.isActiveTier(previousTier)) {
+                existingPeak = tierSystem.normalizeTier(previousTier);
+            }
 
             // =====================================================
             // TIER ROLE CONFIG
@@ -317,6 +328,21 @@ module.exports = {
             );
 
             // =====================================================
+            // PEAK TIER UPDATE (never decrease)
+            // =====================================================
+
+            let finalPeakTier = tierSystem.getHigherPeak(existingPeak, tier);
+            if (!finalPeakTier) {
+                finalPeakTier = tierSystem.initializePeak(previousTier, tier);
+            }
+
+            if (finalPeakTier) {
+                await playerPeak.setPeakTier(user.id, gamemode, finalPeakTier);
+            }
+
+            const currentPointsResult = tierSystem.getTierPoints(tier);
+
+            // =====================================================
             // WEBSITE SYNC
             // =====================================================
 
@@ -338,8 +364,17 @@ module.exports = {
 
                             body: JSON.stringify({
                                 discordId: user.id,
+                                userId: user.id,
                                 ign: player.ign,
                                 tier: tier,
+                                currentTier: tier,
+                                peakTier: finalPeakTier,
+                                points: currentPointsResult,
+                                currentTierPoints: currentPointsResult,
+                                retired: false,
+                                retirementStatus: false,
+                                retiredTier: null,
+                                retiredPoints: 0,
                                 gamemode:
                                     gamemode.toLowerCase()
                             })

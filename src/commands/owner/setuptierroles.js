@@ -12,6 +12,12 @@ const NEW_TIERS = [
     'HT2',
     'LT1',
     'HT1',
+    'RLT5',
+    'RHT5',
+    'RLT4',
+    'RHT4',
+    'RLT3',
+    'RHT3',
     'RLT2',
     'RHT2',
     'RLT1',
@@ -160,7 +166,7 @@ module.exports = {
                     if (!roleId) {
                         const newRole = await interaction.guild.roles.create({
                             name: roleName,
-                            reason: 'KairoTiers automatic tier role setup'
+                            reason: 'AsianTiers automatic tier role setup'
                         });
 
                         discordRoles.set(newRole.id, newRole);

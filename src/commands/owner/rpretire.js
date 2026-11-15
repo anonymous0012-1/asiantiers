@@ -4,6 +4,8 @@ const emojis = require('../../config/emojis');
 const supabase = require('../../database/supabase');
 const perms = require('../../utils/permissions');
 const fetch = require('node-fetch');
+const tierSystem = require('../../utils/tierSystem');
+const playerPeak = require('../../utils/playerPeak');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -145,6 +147,41 @@ module.exports = {
                 previousResult?.new_tier || 'Unranked';
 
             // =====================================================
+            // PEAK TIER (retirement uses Peak Tier, not current)
+            // =====================================================
+
+            const existingPeakTiers = await playerPeak.getPeakTiers(user.id);
+            let peakTier = existingPeakTiers?.[gamemode]
+                ? tierSystem.normalizeTier(existingPeakTiers[gamemode])
+                : null;
+
+            if (!peakTier && tierSystem.isActiveTier(previousTier)) {
+                peakTier = tierSystem.normalizeTier(previousTier);
+            }
+
+            // If still missing, try to infer from the supplied retired tier.
+            if (!peakTier && tier) {
+                const base = tierSystem.normalizeTier(tier).replace(/^R/, '');
+                if (tierSystem.isActiveTier(base)) {
+                    peakTier = base;
+                }
+            }
+
+            // Initialize peak safely if needed.
+            if (!peakTier) {
+                peakTier = tierSystem.initializePeak(previousTier, null);
+            }
+
+            // Retirement must use the Peak Tier.
+            const retiredTier = tierSystem.getRetiredTier(peakTier) || tierSystem.normalizeTier(tier);
+            const retiredPoints = tierSystem.getRetiredPoints(retiredTier);
+
+            // Persist peak (never lower).
+            if (peakTier) {
+                await playerPeak.setPeakTier(user.id, gamemode, peakTier);
+            }
+
+            // =====================================================
             // TIER ROLE CONFIG
             // =====================================================
 
@@ -152,7 +189,7 @@ module.exports = {
                 config.tiers?.[gamemode] || {};
 
             // Existing tiers are stored in config. New tiers are stored in Supabase.
-            let newRoleId = gamemodeTiers[tier];
+            let newRoleId = gamemodeTiers[retiredTier];
 
             if (!newRoleId) {
                 try {
@@ -160,7 +197,7 @@ module.exports = {
                         .from('tier_roles')
                         .select('role_id')
                         .eq('gamemode', gamemode)
-                        .eq('tier', tier)
+                        .eq('tier', retiredTier)
                         .maybeSingle();
 
                     if (tierRoleError) throw tierRoleError;
@@ -250,7 +287,7 @@ module.exports = {
                     ign: player.ign,
                     gamemode: gamemode,
                     previous_tier: previousTier,
-                    new_tier: tier,
+                    new_tier: retiredTier,
                     tester_id: interaction.user.id
                 });
 
@@ -317,6 +354,12 @@ module.exports = {
             );
 
             // =====================================================
+            // RETIREMENT DATA (DB)
+            // =====================================================
+
+            await playerPeak.setRetiredTier(user.id, gamemode, retiredTier, retiredPoints);
+
+            // =====================================================
             // WEBSITE SYNC
             // =====================================================
 
@@ -338,8 +381,17 @@ module.exports = {
 
                             body: JSON.stringify({
                                 discordId: user.id,
+                                userId: user.id,
                                 ign: player.ign,
-                                tier: tier,
+                                tier: retiredTier,
+                                currentTier: retiredTier,
+                                peakTier: peakTier,
+                                points: retiredPoints,
+                                currentTierPoints: retiredPoints,
+                                retired: true,
+                                retirementStatus: true,
+                                retiredTier: retiredTier,
+                                retiredPoints: retiredPoints,
                                 gamemode:
                                     gamemode.toLowerCase()
                             })
@@ -461,7 +513,7 @@ module.exports = {
                                 'Rank Earned',
 
                             value:
-                                `\`${tier}\``,
+                                `\`${retiredTier}\``,
 
                             inline:
                                 false
@@ -500,7 +552,7 @@ module.exports = {
                 content:
                     `<:tick:1570104808055111742> Result submitted for **${player.ign}** in **${gamemode}**.\n\n` +
                     `Previous Tier: **${previousTier}**\n` +
-                    `New Tier: **${tier}**\n\n` +
+                    `New Tier: **${retiredTier}**\n\n` +
                     `⏳ **${gamemode} cooldown:** <t:${unixCooldown}:R>`
             });
 

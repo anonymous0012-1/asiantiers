@@ -5,6 +5,8 @@ const {
 const config = require("../../config/config");
 const supabase = require("../../database/supabase");
 const fetch = require("node-fetch");
+const tierSystem = require("../../utils/tierSystem");
+const playerPeak = require("../../utils/playerPeak");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -63,6 +65,11 @@ module.exports = {
                 content: "<:crosss:1570104768628531290> Player profile not found."
             });
         }
+
+        const peakTiers = await playerPeak.getPeakTiers(user.id);
+        const peakTier = peakTiers?.[gamemode]
+            ? tierSystem.normalizeTier(peakTiers[gamemode])
+            : null;
 
         // Get gamemode roles
         const gamemodeTiers = config.tiers?.[gamemode] || {};
@@ -135,6 +142,14 @@ module.exports = {
                         body: JSON.stringify({
                             ign: player.ign,
                             tier: "Unranked",
+                            currentTier: "Unranked",
+                            peakTier: peakTier,
+                            points: 0,
+                            currentTierPoints: 0,
+                            retired: false,
+                            retirementStatus: false,
+                            retiredTier: null,
+                            retiredPoints: 0,
                             gamemode: gamemode.toLowerCase(),
                             userId: user.id,
                             guildId: interaction.guildId

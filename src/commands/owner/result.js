@@ -4,6 +4,8 @@ const emojis = require('../../config/emojis');
 const supabase = require('../../database/supabase');
 const perms = require('../../utils/permissions');
 const fetch = require('node-fetch');
+const tierSystem = require('../../utils/tierSystem');
+const playerPeak = require('../../utils/playerPeak');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -141,6 +143,15 @@ module.exports = {
                 .limit(1)
                 .maybeSingle();
 
+            // =====================================================
+            // PEAK TIER (per gamemode)
+            // =====================================================
+
+            const existingPeakTiers = await playerPeak.getPeakTiers(user.id);
+            let existingPeak = existingPeakTiers?.[gamemode]
+                ? tierSystem.normalizeTier(existingPeakTiers[gamemode])
+                : null;
+
             if (previousError) {
 
                 console.error(
@@ -151,6 +162,11 @@ module.exports = {
 
             const previousTier =
                 previousResult?.new_tier || 'Unranked';
+
+            // If no recorded peak yet, initialize it safely from the current tier.
+            if (!existingPeak && tierSystem.isActiveTier(previousTier)) {
+                existingPeak = tierSystem.normalizeTier(previousTier);
+            }
 
             // =====================================================
             // TIER ROLE CONFIG
@@ -325,6 +341,35 @@ module.exports = {
             );
 
             // =====================================================
+            // PEAK TIER UPDATE (never decrease)
+            // =====================================================
+
+            const newPeakTier = tierSystem.getHigherPeak(existingPeak, tier);
+            // If no peak exists yet, initialize from the assigned tier or previous current tier.
+            let finalPeakTier = newPeakTier;
+            if (!finalPeakTier) {
+                finalPeakTier = tierSystem.initializePeak(previousTier, tier);
+            }
+
+            if (finalPeakTier) {
+                await playerPeak.setPeakTier(user.id, gamemode, finalPeakTier);
+            }
+
+            // =====================================================
+            // RETIREMENT DATA
+            // =====================================================
+
+            const isRetiredResult = tierSystem.isRetiredTier(tier);
+            const retiredTierResult = isRetiredResult ? tierSystem.normalizeTier(tier) : null;
+            const retiredPointsResult = isRetiredResult ? tierSystem.getTierPoints(tier) : 0;
+
+            if (isRetiredResult && retiredTierResult) {
+                await playerPeak.setRetiredTier(user.id, gamemode, retiredTierResult, retiredPointsResult);
+            }
+
+            const currentPointsResult = tierSystem.getTierPoints(tier);
+
+            // =====================================================
             // WEBSITE SYNC
             // =====================================================
 
@@ -346,8 +391,17 @@ module.exports = {
 
                             body: JSON.stringify({
                                 discordId: user.id,
+                                userId: user.id,
                                 ign: player.ign,
                                 tier: tier,
+                                currentTier: tier,
+                                peakTier: finalPeakTier,
+                                points: currentPointsResult,
+                                currentTierPoints: currentPointsResult,
+                                retired: isRetiredResult,
+                                retirementStatus: isRetiredResult,
+                                retiredTier: retiredTierResult,
+                                retiredPoints: retiredPointsResult,
                                 gamemode:
                                     gamemode.toLowerCase()
                             })
