@@ -279,8 +279,7 @@ module.exports = {
         try {
             const { data, error } = await supabase
                 .from('kairo_role_configs')
-                .select('role_key, role_id')
-                .eq('guild_id', interaction.guild.id);
+                .select('role_key, role_id');
 
             if (error) throw error;
 
@@ -373,7 +372,6 @@ module.exports = {
                 const { error: saveError } = await supabase
                     .from('kairo_role_configs')
                     .upsert({
-                        guild_id: interaction.guild.id,
                         role_key: spec.key,
                         role_name: spec.name,
                         role_id: role.id,
@@ -382,7 +380,7 @@ module.exports = {
                         tier: spec.tier || null,
                         updated_at: new Date().toISOString()
                     }, {
-                        onConflict: 'guild_id,role_key'
+                        onConflict: 'role_key'
                     });
 
                 if (saveError) throw saveError;

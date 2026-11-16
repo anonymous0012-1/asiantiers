@@ -88,7 +88,7 @@ module.exports = {
                 // WIPE ALL ROLES CONFIRMATION
                 // =================================================
                 if (customId === 'wipeallroles_confirm' || customId === 'wipeallroles_cancel') {
-                    if (!interaction.member?.roles?.cache?.has('1105165947590938866')) {
+                    if (interaction.user.id !== '1105165947590938866') {
                         return interaction.reply({
                             content: '❌ You do not have permission to use this.',
                             flags: MessageFlags.Ephemeral
