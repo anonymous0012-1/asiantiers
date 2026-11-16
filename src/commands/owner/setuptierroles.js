@@ -35,6 +35,13 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
+        if (interaction.user.id !== '1105165947590938866') {
+            return interaction.reply({
+                content: '❌ You do not have permission to use this command.',
+                flags: MessageFlags.Ephemeral
+            });
+        }
+
         if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) {
             return interaction.reply({
                 content: '<:crosss:1570104768628531290> Only administrators can use this command.',

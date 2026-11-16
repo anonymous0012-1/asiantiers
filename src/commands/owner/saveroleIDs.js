@@ -10,8 +10,8 @@ const roleConfig = require('../../utils/roleConfig');
 const ALLOWED_USER_ID = '1105165947590938866';
 
 const TIERS = [
-    'LT5', 'HT5', 'LT4', 'HT4', 'LT3', 'HT3',
     'LT2', 'HT2', 'LT1', 'HT1',
+    'RLT5', 'RHT5', 'RLT4', 'RHT4', 'RLT3', 'RHT3',
     'RLT2', 'RHT2', 'RLT1', 'RHT1'
 ];
 
@@ -54,6 +54,23 @@ function buildRoleSpecs() {
 
     // Special
     add({ key: 'tester_of_the_month', name: 'Tester of the Month', category: 'Special' });
+
+    // Restricted Role
+    add({ key: 'restricted', name: 'Restricted', category: 'Restricted' });
+
+    // Registration Role
+    add({ key: 'registration', name: 'Registration', category: 'Registration' });
+
+    // Waitlist Roles
+    gamemodes.forEach((gamemode) => {
+        const displayName = config.gamemodeNames?.[gamemode] || gamemode;
+        add({
+            key: `waitlist_${gamemode}`,
+            name: `${displayName} Waitlist`,
+            category: 'Waitlist',
+            gamemode
+        });
+    });
 
     // Tier roles
     gamemodes.forEach((gamemode) => {
@@ -106,7 +123,6 @@ module.exports = {
 
         for (const spec of specs) {
             const role = discordRoles.find(r => r.name === spec.name);
-
             if (!role) {
                 missing++;
                 missingNames.push(spec.name);

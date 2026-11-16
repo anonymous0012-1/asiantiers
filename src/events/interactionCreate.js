@@ -2533,6 +2533,11 @@ module.exports = {
                             await interaction.member.roles.add(verifiedRoleId);
                         }
 
+                        const registrationRoleId = roleConfig.getRoleIdSync('registration');
+                        if (registrationRoleId) {
+                            await interaction.member.roles.add(registrationRoleId);
+                        }
+
                     } catch (error) {
 
                         console.error(

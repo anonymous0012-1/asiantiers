@@ -27,9 +27,10 @@ module.exports = {
         // OWNER ONLY
         // ==========================================
 
-        if (interaction.user.id !== config.ownerId) {
+        const REQUIRED_ROLE_ID = '1571866251721056266';
+        if (!interaction.member?.roles?.cache?.has(REQUIRED_ROLE_ID)) {
             return interaction.reply({
-                content: "<:crosss:1570104768628531290> Only the bot owner can use this command.",
+                content: "<:crosss:1570104768628531290> You do not have permission to use this command.",
                 flags: MessageFlags.Ephemeral
             });
         }
