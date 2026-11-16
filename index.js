@@ -105,10 +105,21 @@ for (const file of eventFiles) {
 // Login
 // ==========================================
 
-client.login(process.env.TOKEN)
+const roleConfig = require('./src/utils/roleConfig');
+
+(async () => {
+    try {
+        await roleConfig.loadRoleConfigs();
+        console.log('✅ Role configuration loaded from Supabase');
+    } catch (error) {
+        console.error('⚠️ Failed to load role configuration:', error);
+    }
+
+    client.login(process.env.TOKEN)
     .then(() => {
         console.log('🤖 UniversalTiers Bot Logged In');
     })
     .catch(error => {
         console.error('<:crosss:1570104768628531290> Discord Login Failed:', error);
     });
+})();

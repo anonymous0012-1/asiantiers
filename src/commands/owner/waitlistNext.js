@@ -7,6 +7,7 @@ const {
 
 const config = require("../../config/config");
 const supabase = require("../../database/supabase");
+const roleConfig = require("../../utils/roleConfig");
 const queueRenderer = require("../../queue/queueRenderer");
 const perms = require("../../utils/permissions");
 
@@ -146,7 +147,7 @@ module.exports = {
                             ]
                         },
                         {
-                            id: config.roles.tester,
+                            id: roleConfig.getRoleIdSync('tester') || '1570451868943908884',
                             allow: [
                                 PermissionFlagsBits.ViewChannel,
                                 PermissionFlagsBits.SendMessages

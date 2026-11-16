@@ -1,16 +1,22 @@
-const config = require('../config/config');
+const roleConfig = require('./roleConfig');
 
 module.exports = {
     isTester: (member) => {
-        return member.roles.cache.has(config.roles.tester);
+        const roleId = roleConfig.getRoleIdSync('tester');
+        return !!roleId && member.roles.cache.has(roleId);
     },
     isBlacklisted: (member) => {
-        return member.roles.cache.has(config.roles.blacklist);
+        const roleId = roleConfig.getRoleIdSync('blacklist');
+        return !!roleId && member.roles.cache.has(roleId);
     },
     isVerified: (member) => {
-        return member.roles.cache.has(config.roles.verified);
+        const roleId = roleConfig.getRoleIdSync('verified');
+        return !!roleId && member.roles.cache.has(roleId);
     },
     hasPriority: (member) => {
-        return config.roles.priority.some(id => member.roles.cache.has(id));
+        return ['booster', 'vip'].some(key => {
+            const roleId = roleConfig.getRoleIdSync(key);
+            return !!roleId && member.roles.cache.has(roleId);
+        });
     }
 };

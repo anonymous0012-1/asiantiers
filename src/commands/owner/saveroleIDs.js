@@ -41,7 +41,7 @@ function buildRoleSpecs() {
     // Testing
     add({ key: 'tester', name: 'Tester', category: 'Testing' });
 
-    const gamemodes = Object.keys(config.tiers || {});
+    const gamemodes = config.gamemodes || [];
     gamemodes.forEach((gamemode) => {
         const displayName = config.gamemodeNames?.[gamemode] || gamemode;
         add({

@@ -199,7 +199,7 @@ module.exports = {
 
                     if (
                         interaction.user.id !==
-                        config.roles.ownerId
+                        config.ownerId
                     ) {
 
                         return await interaction.reply({
@@ -564,7 +564,7 @@ module.exports = {
                         customId === 'high_ticket_skip'
                     ) {
                         const isSkip = customId === 'high_ticket_skip';
-                        const isOwner = interaction.user.id === config.roles.ownerId;
+                        const isOwner = interaction.user.id === config.ownerId;
 
                         const { data: staffRoles, error: staffRolesError } = await supabase
                             .from('high_test_staff_roles')
@@ -589,7 +589,7 @@ module.exports = {
     // Owner bypasses the staff-role list.
     // All other users must have a role explicitly added via /addrole.
 
-    const HIGH_TEST_STAFF_ROLE_ID = '1542798698617249842';
+    const HIGH_TEST_STAFF_ROLE_ID = roleConfig.getRoleIdSync('staff') || '1542798698617249842';
 
     const memberRoleIds = interaction.member?.roles?.cache
         ? [...interaction.member.roles.cache.keys()]
@@ -1151,6 +1151,7 @@ module.exports = {
                     }
 
                     const roleId =
+                        roleConfig.getRoleIdSync(`waitlist_${gamemode}`) ||
                         config.roles.waitlist?.[
                             gamemode
                         ];
@@ -2196,7 +2197,7 @@ module.exports = {
                             ]
                         },
                         {
-                            id: config.roles.ownerId,
+                            id: config.ownerId,
                             allow: [
                                 PermissionFlagsBits.ViewChannel,
                                 PermissionFlagsBits.SendMessages,
@@ -2527,9 +2528,10 @@ module.exports = {
  
                     try {
  
-                        await interaction.member.roles.add(
-                            config.roles.verified
-                        );
+                        const verifiedRoleId = roleConfig.getRoleIdSync('verified');
+                        if (verifiedRoleId) {
+                            await interaction.member.roles.add(verifiedRoleId);
+                        }
 
                     } catch (error) {
 

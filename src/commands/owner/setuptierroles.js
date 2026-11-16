@@ -59,7 +59,7 @@ module.exports = {
 
         await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-        const gamemodes = Object.keys(config.tiers || {});
+        const gamemodes = config.gamemodes || [];
 
         let created = 0;
         let reused = 0;

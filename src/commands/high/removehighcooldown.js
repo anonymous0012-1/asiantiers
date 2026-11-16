@@ -15,7 +15,7 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        if (interaction.user.id !== config.roles.ownerId) {
+        if (interaction.user.id !== config.ownerId) {
             return interaction.reply({
                 content: '<:crosss:1570104768628531290> Only the bot owner can use this command.',
                 flags: MessageFlags.Ephemeral
@@ -62,3 +62,4 @@ module.exports = {
         }
     }
 };
+

@@ -7,6 +7,7 @@ const supabase = require("../../database/supabase");
 const fetch = require("node-fetch");
 const tierSystem = require("../../utils/tierSystem");
 const playerPeak = require("../../utils/playerPeak");
+const roleConfig = require("../../utils/roleConfig");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -41,7 +42,7 @@ module.exports = {
     async execute(interaction) {
 
         // OWNER ONLY
-        if (interaction.user.id !== config.roles.ownerId) {
+        if (interaction.user.id !== config.ownerId) {
             return interaction.reply({
                 content: "<:crosss:1570104768628531290> Only the bot owner can use this command.",
                 flags: 64
@@ -71,14 +72,11 @@ module.exports = {
             ? tierSystem.normalizeTier(peakTiers[gamemode])
             : null;
 
-        // Get gamemode roles
-        const gamemodeTiers = config.tiers?.[gamemode] || {};
-
         // Get Discord member
         const member = await interaction.guild.members.fetch(user.id);
 
         // Remove every tier role for this gamemode, including Supabase-backed new tiers.
-        const tierRoles = [...new Set(Object.values(gamemodeTiers).filter(Boolean))];
+        const tierRoles = [...new Set(roleConfig.getTierRoleIdsSync(gamemode).filter(Boolean))];
 
         try {
             const { data: dbGamemodeRoles, error: dbGamemodeRolesError } = await supabase

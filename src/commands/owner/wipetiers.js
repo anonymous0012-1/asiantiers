@@ -8,6 +8,7 @@ const supabase = require("../../database/supabase");
 const fetch = require("node-fetch");
 const tierSystem = require("../../utils/tierSystem");
 const playerPeak = require("../../utils/playerPeak");
+const roleConfig = require("../../utils/roleConfig");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -26,7 +27,7 @@ module.exports = {
         // OWNER ONLY
         // ==========================================
 
-        if (interaction.user.id !== config.roles.ownerId) {
+        if (interaction.user.id !== config.ownerId) {
             return interaction.reply({
                 content: "<:crosss:1570104768628531290> Only the bot owner can use this command.",
                 flags: MessageFlags.Ephemeral
@@ -115,11 +116,8 @@ module.exports = {
 
                 const allTierRoleIds = new Set();
 
-                for (
-                    const gamemode
-                    of Object.keys(config.tiers || {})
-                ) {
-                    for (const roleId of Object.values(config.tiers[gamemode] || {}).filter(Boolean)) {
+                for (const gamemode of (config.gamemodes || [])) {
+                    for (const roleId of roleConfig.getTierRoleIdsSync(gamemode).filter(Boolean)) {
                         allTierRoleIds.add(roleId);
                     }
                 }
@@ -167,7 +165,7 @@ module.exports = {
             // ==========================================
 
             const gamemodes =
-                Object.keys(config.tiers || {});
+                config.gamemodes || [];
 
             let websiteSuccess = 0;
             let websiteFailed = 0;

@@ -6,6 +6,7 @@ const perms = require('../../utils/permissions');
 const fetch = require('node-fetch');
 const tierSystem = require('../../utils/tierSystem');
 const playerPeak = require('../../utils/playerPeak');
+const roleConfig = require('../../utils/roleConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -58,7 +59,7 @@ module.exports = {
         // TESTER CHECK
         // =====================================================
 
-        const RPRETIRE_ROLE_ID = '1570451892583145583';
+        const RPRETIRE_ROLE_ID = roleConfig.getRoleIdSync('retire_result_manager') || '1570451892583145583';
 
         if (!interaction.member.roles.cache.has(RPRETIRE_ROLE_ID)) {
             return interaction.reply({
@@ -185,11 +186,11 @@ module.exports = {
             // TIER ROLE CONFIG
             // =====================================================
 
-            const gamemodeTiers =
-                config.tiers?.[gamemode] || {};
+            // Existing tiers are now stored in Supabase.
+            const gamemodeTiers = {};
 
             // Existing tiers are stored in config. New tiers are stored in Supabase.
-            let newRoleId = gamemodeTiers[retiredTier];
+            let newRoleId = roleConfig.getRoleIdSync(`tier_${gamemode}_${retiredTier}`);
 
             if (!newRoleId) {
                 try {
@@ -233,7 +234,7 @@ module.exports = {
             // =====================================================
 
             // Collect every tier role for this gamemode from both config and Supabase.
-            let allGamemodeRoles = Object.values(gamemodeTiers);
+            let allGamemodeRoles = roleConfig.getTierRoleIdsSync(gamemode);
 
             try {
                 const { data: dbGamemodeRoles, error: dbGamemodeRolesError } = await supabase

@@ -6,6 +6,7 @@ const perms = require('../../utils/permissions');
 const fetch = require('node-fetch');
 const tierSystem = require('../../utils/tierSystem');
 const playerPeak = require('../../utils/playerPeak');
+const roleConfig = require('../../utils/roleConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -172,11 +173,9 @@ module.exports = {
             // TIER ROLE CONFIG
             // =====================================================
 
-            const gamemodeTiers =
-                config.tiers?.[gamemode] || {};
-
-            // Existing tiers are stored in config. New tiers are stored in Supabase.
-            let newRoleId = gamemodeTiers[tier];
+            // Existing tiers are now stored in Supabase.
+            const gamemodeTiers = {};
+            let newRoleId = roleConfig.getRoleIdSync(`tier_${gamemode}_${tier}`);
 
             if (!newRoleId) {
                 try {
@@ -220,7 +219,7 @@ module.exports = {
             // =====================================================
 
             // Collect every tier role for this gamemode from both config and Supabase.
-            let allGamemodeRoles = Object.values(gamemodeTiers);
+            let allGamemodeRoles = roleConfig.getTierRoleIdsSync(gamemode);
 
             try {
                 const { data: dbGamemodeRoles, error: dbGamemodeRolesError } = await supabase
