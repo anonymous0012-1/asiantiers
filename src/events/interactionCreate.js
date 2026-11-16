@@ -104,29 +104,62 @@ module.exports = {
 
                     await interaction.deferUpdate();
 
-                    const configs = await roleConfig.getAllRoleConfigs(true);
-                    const keys = Object.keys(configs || {});
+                    const guild = interaction.guild;
+                    const botMember = guild.members.me;
+                    const roles = await guild.roles.fetch();
+
                     let deleted = 0;
                     let failed = 0;
-                    const failures = [];
+                    let skipped = 0;
+                    const failedNames = [];
+                    const skippedNames = [];
 
-                    for (const key of keys) {
-                        const roleId = configs[key];
+                    for (const role of roles.values()) {
+                        // Never delete @everyone
+                        if (role.id === guild.id) {
+                            skipped++;
+                            skippedNames.push('@everyone');
+                            continue;
+                        }
+
+                        // Never delete managed/integration roles
+                        if (role.managed) {
+                            skipped++;
+                            skippedNames.push(`${role.name} (managed)`);
+                            continue;
+                        }
+
+                        // Never delete roles the bot cannot manage
+                        if (!role.editable || !role.deletable) {
+                            skipped++;
+                            skippedNames.push(`${role.name} (not deletable)`);
+                            continue;
+                        }
+
+                        // Never delete roles at or above the bot's highest role
+                        if (botMember && role.position >= botMember.roles.highest.position) {
+                            skipped++;
+                            skippedNames.push(`${role.name} (above bot)`);
+                            continue;
+                        }
+
                         try {
-                            const role = await interaction.guild.roles.fetch(roleId).catch(() => null);
-                            if (role && !role.managed && role.id !== interaction.guild.id) {
-                                await role.delete('Wipe all managed roles');
-                                deleted++;
-                            }
+                            await role.delete('Wipe all deletable roles');
+                            deleted++;
+                            await new Promise(resolve => setTimeout(resolve, 250));
                         } catch (error) {
                             failed++;
-                            failures.push(`${key}: ${error?.message || error}`);
-                            console.error('WIPE ROLE DELETE ERROR:', key, error);
+                            failedNames.push(`${role.name}: ${error?.message || error}`);
+                            console.error('WIPE ROLE DELETE ERROR:', role.name, error);
                         }
                     }
 
+                    // Clean all role mapping records
                     try {
-                        await roleConfig.deleteRoleConfigs(keys);
+                        await supabase
+                            .from('kairo_role_configs')
+                            .delete()
+                            .not('role_key', 'is', null);
                     } catch (error) {
                         console.error('WIPE ROLE CONFIG DELETE ERROR:', error);
                     }
@@ -134,13 +167,18 @@ module.exports = {
                     roleConfig.clearRoleConfigCache();
 
                     const summary = [
-                        '🧹 Wipe all roles complete.',
+                        '🧹 Wipe all deletable roles complete.',
                         `Deleted: ${deleted}`,
                         `Failed: ${failed}`,
-                        `Records removed: ${keys.length}`
+                        `Skipped: ${skipped}`,
                     ];
-                    if (failures.length > 0) {
-                        summary.push('Failures:', failures.slice(0, 10).join('\n'));
+
+                    if (failedNames.length > 0) {
+                        summary.push('', 'Failed roles:', failedNames.slice(0, 15).join('\n'));
+                    }
+
+                    if (skippedNames.length > 0) {
+                        summary.push('', 'Skipped roles:', skippedNames.slice(0, 15).join('\n'));
                     }
 
                     return interaction.editReply({
