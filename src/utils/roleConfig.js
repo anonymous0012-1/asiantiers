@@ -5,27 +5,53 @@ let cache = null;
 let cacheTime = 0;
 const CACHE_TTL = 60 * 1000;
 
+// Fallback defaults (used if Supabase has no mapping yet)
+const DEFAULT_ROLE_IDS = {
+    tester: '1570451868943908884',
+    blacklist: '1570451889781342430',
+    verified: '1570451921880354988',
+    booster: '1537808534178111548',
+    vip: '1570451853651484712',
+    high_result_manager: '1570451894185234472',
+    retire_result_manager: '1570451892583145583',
+    staff: '1542798698617249842'
+};
+
 async function loadRoleConfigs(force = false, guildId = null) {
     const now = Date.now();
     if (!force && cache && (now - cacheTime) < CACHE_TTL) {
         return cache;
     }
 
-    const { data, error } = await supabase
-        .from('kairo_role_configs')
-        .select('role_key, role_name, role_category, gamemode, tier, role_id');
+    let data = null;
+    let error = null;
 
-    if (error) {
-        throw error;
+    try {
+        const result = await supabase
+            .from('kairo_role_configs')
+            .select('role_key, role_name, category, gamemode, tier, role_id');
+        data = result.data;
+        error = result.error;
+    } catch (e) {
+        error = e;
     }
 
-    const map = {};
+    if (error) {
+        console.error('[RoleConfig] Supabase load error:', error);
+        const fallback = { ...DEFAULT_ROLE_IDS };
+        cache = fallback;
+        cacheTime = now;
+        return fallback;
+    }
+
+    const map = { ...DEFAULT_ROLE_IDS };
     for (const row of data || []) {
         if (row?.role_key && row?.role_id) {
-            map[row.role_key] = row.role_id;
+            map[row.role_key] = String(row.role_id);
         }
     }
 
+    console.log('[RoleConfig] Loaded', Object.keys(map).length, 'role mappings');
     cache = map;
     cacheTime = now;
     return map;
@@ -85,7 +111,7 @@ async function upsertRoleConfig(roleKey, roleName, category, gamemode, tier, rol
         .upsert({
             role_key: roleKey,
             role_name: roleName,
-            role_category: category,
+            category: category,
             gamemode: gamemode || null,
             tier: tier || null,
             role_id: roleId,

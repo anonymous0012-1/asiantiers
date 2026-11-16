@@ -61,7 +61,14 @@ module.exports = {
 
         const RPRETIRE_ROLE_ID = roleConfig.getRoleIdSync('retire_result_manager') || '1570451892583145583';
 
-        if (!interaction.member.roles.cache.has(RPRETIRE_ROLE_ID)) {
+        const hasRole = interaction.member.roles.cache.has(RPRETIRE_ROLE_ID);
+        console.log('[AuthDebug] rpretire', {
+            requiredKey: 'retire_result_manager',
+            requiredRoleId: RPRETIRE_ROLE_ID,
+            userRoleIds: [...interaction.member.roles.cache.keys()],
+            allowed: hasRole
+        });
+        if (!hasRole) {
             return interaction.reply({
                 content: '<:crosss:1570104768628531290> Unauthorized.',
                 flags: MessageFlags.Ephemeral

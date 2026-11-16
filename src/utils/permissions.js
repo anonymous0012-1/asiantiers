@@ -1,22 +1,40 @@
 const roleConfig = require('./roleConfig');
 
+function debugAuth(commandName, requiredKey, requiredRoleId, member, allowed) {
+    console.log('[AuthDebug]', commandName, {
+        requiredKey,
+        requiredRoleId,
+        userRoleIds: member?.roles?.cache ? [...member.roles.cache.keys()] : [],
+        allowed
+    });
+}
+
 module.exports = {
     isTester: (member) => {
-        const roleId = roleConfig.getRoleIdSync('tester');
-        return !!roleId && member.roles.cache.has(roleId);
+        const requiredRoleId = roleConfig.getRoleIdSync('tester');
+        const allowed = !!requiredRoleId && member.roles.cache.has(requiredRoleId);
+        if (!allowed) debugAuth('isTester', 'tester', requiredRoleId, member, allowed);
+        return allowed;
     },
     isBlacklisted: (member) => {
-        const roleId = roleConfig.getRoleIdSync('blacklist');
-        return !!roleId && member.roles.cache.has(roleId);
+        const requiredRoleId = roleConfig.getRoleIdSync('blacklist');
+        const allowed = !!requiredRoleId && member.roles.cache.has(requiredRoleId);
+        if (allowed) debugAuth('isBlacklisted', 'blacklist', requiredRoleId, member, allowed);
+        return allowed;
     },
     isVerified: (member) => {
-        const roleId = roleConfig.getRoleIdSync('verified');
-        return !!roleId && member.roles.cache.has(roleId);
+        const requiredRoleId = roleConfig.getRoleIdSync('verified');
+        const allowed = !!requiredRoleId && member.roles.cache.has(requiredRoleId);
+        if (!allowed) debugAuth('isVerified', 'verified', requiredRoleId, member, allowed);
+        return allowed;
     },
     hasPriority: (member) => {
-        return ['booster', 'vip'].some(key => {
-            const roleId = roleConfig.getRoleIdSync(key);
-            return !!roleId && member.roles.cache.has(roleId);
+        const keys = ['booster', 'vip'];
+        const allowed = keys.some(key => {
+            const requiredRoleId = roleConfig.getRoleIdSync(key);
+            return !!requiredRoleId && member.roles.cache.has(requiredRoleId);
         });
+        if (!allowed) debugAuth('hasPriority', keys.join(','), keys.map(k => roleConfig.getRoleIdSync(k)), member, allowed);
+        return allowed;
     }
 };

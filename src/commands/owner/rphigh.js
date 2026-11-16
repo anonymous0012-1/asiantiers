@@ -61,7 +61,14 @@ module.exports = {
 
         const RPHIGH_ROLE_ID = roleConfig.getRoleIdSync('high_result_manager') || '1570451894185234472';
 
-        if (!interaction.member.roles.cache.has(RPHIGH_ROLE_ID)) {
+        const hasRole = interaction.member.roles.cache.has(RPHIGH_ROLE_ID);
+        console.log('[AuthDebug] rphigh', {
+            requiredKey: 'high_result_manager',
+            requiredRoleId: RPHIGH_ROLE_ID,
+            userRoleIds: [...interaction.member.roles.cache.keys()],
+            allowed: hasRole
+        });
+        if (!hasRole) {
             return interaction.reply({
                 content: '<:crosss:1570104768628531290> Unauthorized.',
                 flags: MessageFlags.Ephemeral
