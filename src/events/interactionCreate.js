@@ -2475,7 +2475,16 @@ module.exports = {
                                             account_type: accType,
                                             verified: true,
                                             registration: true,
-                                            registrationSync: true
+                                            registrationSync: true,
+                                            tier: 'Unranked',
+                                            currentTier: 'Unranked',
+                                            peakTier: null,
+                                            points: 0,
+                                            currentTierPoints: 0,
+                                            retired: false,
+                                            retirementStatus: false,
+                                            retiredTier: null,
+                                            retiredPoints: 0
                                         })
                                     }
                                 );

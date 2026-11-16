@@ -14,7 +14,19 @@ const DEFAULT_ROLE_IDS = {
     vip: '1570451853651484712',
     high_result_manager: '1570451894185234472',
     retire_result_manager: '1570451892583145583',
-    staff: '1542798698617249842'
+    staff: '1542798698617249842',
+    restricted: '1571874866745966612',
+    registration: '1571879625481519216',
+    waitlist_Sword: '1571879629197807776',
+    waitlist_Mace: '1571882966450311208',
+    waitlist_Axe: '1571883033047605248',
+    waitlist_SMP: '1571883119328497776',
+    waitlist_UHC: '1571883173803986974',
+    waitlist_DiaPot: '1571883286769438790',
+    waitlist_diasmp: '1571883233107378186',
+    waitlist_spearmace: '1571883342209613884',
+    waitlist_manhunt: '1571883533570416810',
+    waitlist_cart: '1571883625039798403'
 };
 
 async function loadRoleConfigs(force = false, guildId = null) {
