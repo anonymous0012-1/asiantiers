@@ -20,11 +20,10 @@ function buildRoleSpecs() {
     let rank = 0;
     const add = (spec) => specs.push({ ...spec, rank: rank++ });
 
-    // Main
     add({ key: 'owner', name: 'Owner', category: 'Main' });
     add({ key: 'overseas', name: 'Overseas', category: 'Main' });
 
-    // Staff
+    
     add({ key: 'sr_mod', name: 'Sr. Mod', category: 'Staff' });
     add({ key: 'moderator', name: 'Moderator', category: 'Staff' });
     add({ key: 'helper', name: 'Helper', category: 'Staff' });
