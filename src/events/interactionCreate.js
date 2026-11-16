@@ -16,7 +16,8 @@ const config = require('../config/config');
 const supabase = require('../database/supabase');
 const queueRenderer = require('../queue/queueRenderer');
 const perms = require('../utils/permissions');
-
+const fetch = require('node-fetch');
+const roleConfig = require('../utils/roleConfig');
 module.exports = {
     name: 'interactionCreate',
 
@@ -79,10 +80,74 @@ module.exports = {
             // =====================================================
 
             if (interaction.isButton()) {
-
+ 
                 const customId =
                     interaction.customId;
 
+                // =================================================
+                // WIPE ALL ROLES CONFIRMATION
+                // =================================================
+                if (customId === 'wipeallroles_confirm' || customId === 'wipeallroles_cancel') {
+                    if (interaction.user.id !== config.roles.ownerId) {
+                        return interaction.reply({
+                            content: '❌ Only the bot owner can use this.',
+                            flags: MessageFlags.Ephemeral
+                        });
+                    }
+
+                    if (customId === 'wipeallroles_cancel') {
+                        return interaction.update({
+                            content: 'Cancelled.',
+                            components: []
+                        });
+                    }
+
+                    await interaction.deferUpdate();
+
+                    const configs = await roleConfig.getAllRoleConfigs(true);
+                    const keys = Object.keys(configs || {});
+                    let deleted = 0;
+                    let failed = 0;
+                    const failures = [];
+
+                    for (const key of keys) {
+                        const roleId = configs[key];
+                        try {
+                            const role = await interaction.guild.roles.fetch(roleId).catch(() => null);
+                            if (role && !role.managed && role.id !== interaction.guild.id) {
+                                await role.delete('Wipe all managed roles');
+                                deleted++;
+                            }
+                        } catch (error) {
+                            failed++;
+                            failures.push(`${key}: ${error?.message || error}`);
+                            console.error('WIPE ROLE DELETE ERROR:', key, error);
+                        }
+                    }
+
+                    try {
+                        await roleConfig.deleteRoleConfigs(keys);
+                    } catch (error) {
+                        console.error('WIPE ROLE CONFIG DELETE ERROR:', error);
+                    }
+
+                    roleConfig.clearRoleConfigCache();
+
+                    const summary = [
+                        '🧹 Wipe all roles complete.',
+                        `Deleted: ${deleted}`,
+                        `Failed: ${failed}`,
+                        `Records removed: ${keys.length}`
+                    ];
+                    if (failures.length > 0) {
+                        summary.push('Failures:', failures.slice(0, 10).join('\n'));
+                    }
+
+                    return interaction.editReply({
+                        content: summary.join('\n'),
+                        components: []
+                    });
+                }
                 // =================================================
                 // TESTER LEADERBOARD RESET
                 // =================================================
@@ -2329,12 +2394,12 @@ module.exports = {
                     if (
                         profileError
                     ) {
-
+ 
                         console.error(
                             'PROFILE SAVE ERROR:',
                             profileError
                         );
-
+ 
                         return await interaction.reply({
                             content:
                                 '<:crosss:1570104768628531290> Failed to save your profile.',
@@ -2342,9 +2407,86 @@ module.exports = {
                                 MessageFlags.Ephemeral
                         });
                     }
-
+ 
+                    // =====================================================
+                    // WEBSITE REGISTRATION SYNC
+                    // Independent of /rp; safe to retry.
+                    // =====================================================
                     try {
-
+                        let websiteSynced = false;
+ 
+                        for (let attempt = 1; attempt <= 3; attempt++) {
+                            try {
+                                const websiteResponse = await fetch(
+                                    process.env.WEBSITE_API_URL,
+                                    {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-Bot-Secret': process.env.WEBSITE_BOT_SECRET
+                                        },
+                                        body: JSON.stringify({
+                                            discordId: interaction.user.id,
+                                            userId: interaction.user.id,
+                                            ign,
+                                            region,
+                                            accountType: accType,
+                                            account_type: accType,
+                                            verified: true,
+                                            registration: true,
+                                            registrationSync: true
+                                        })
+                                    }
+                                );
+ 
+                                const websiteText = await websiteResponse.text();
+ 
+                                console.log(
+                                    '🌐 Registration Website API Status:',
+                                    websiteResponse.status
+                                );
+                                console.log(
+                                    '🌐 Registration Website API Response:',
+                                    websiteText
+                                );
+ 
+                                if (websiteResponse.ok) {
+                                    websiteSynced = true;
+                                    break;
+                                }
+ 
+                                console.error(
+                                    '<:crosss:1570104768628531290> Registration website sync failed on attempt',
+                                    attempt
+                                );
+                            } catch (syncError) {
+                                console.error(
+                                    '<:crosss:1570104768628531290> REGISTRATION WEBSITE SYNC ERROR:',
+                                    syncError
+                                );
+                            }
+ 
+                            if (attempt < 3) {
+                                await new Promise(resolve =>
+                                    setTimeout(resolve, 500 * attempt)
+                                );
+                            }
+                        }
+ 
+                        if (!websiteSynced) {
+                            console.error(
+                                '<:crosss:1570104768628531290> Registration website sync could not be completed; registration itself remains successful.'
+                            );
+                        }
+                    } catch (error) {
+                        console.error(
+                            '<:crosss:1570104768628531290> REGISTRATION WEBSITE SYNC OUTER ERROR:',
+                            error
+                        );
+                    }
+ 
+                    try {
+ 
                         await interaction.member.roles.add(
                             config.roles.verified
                         );
