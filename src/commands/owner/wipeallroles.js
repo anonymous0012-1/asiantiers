@@ -10,9 +10,9 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
-        if (!interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) {
+        if (!interaction.member?.roles?.cache?.has('1105165947590938866')) {
             return interaction.reply({
-                content: '❌ Only administrators can use this command.',
+                content: '❌ You do not have permission to use this command.',
                 flags: MessageFlags.Ephemeral
             });
         }
