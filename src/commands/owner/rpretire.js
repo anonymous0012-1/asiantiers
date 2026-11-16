@@ -180,9 +180,9 @@ module.exports = {
                 peakTier = tierSystem.initializePeak(previousTier, null);
             }
 
-            // Retirement must use the Peak Tier.
-            const retiredTier = tierSystem.getRetiredTier(peakTier) || tierSystem.normalizeTier(tier);
-            const retiredPoints = tierSystem.getRetiredPoints(retiredTier);
+            // /rpretire only supports these four retired tiers.
+            const retiredTier = tierSystem.normalizeTier(tier);
+            const retiredPoints = tierSystem.getTierPoints(retiredTier);
 
             // Persist peak (never lower).
             if (peakTier) {

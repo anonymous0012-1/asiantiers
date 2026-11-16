@@ -26,20 +26,12 @@ module.exports = {
                 .setDescription('New Tier')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'HT1', value: 'HT1' },
-                    { name: 'LT1', value: 'LT1' },
-                    { name: 'HT2', value: 'HT2' },
-                    { name: 'LT2', value: 'LT2' },
-                    { name: 'HT3', value: 'HT3' },
-                    { name: 'LT3', value: 'LT3' },
-                    { name: 'HT4', value: 'HT4' },
-                    { name: 'LT4', value: 'LT4' },
-                    { name: 'HT5', value: 'HT5' },
                     { name: 'LT5', value: 'LT5' },
-                    { name: 'RHT1', value: 'RHT1' },
-                    { name: 'RLT1', value: 'RLT1' },
-                    { name: 'RHT2', value: 'RHT2' },
-                    { name: 'RLT2', value: 'RLT2' }
+                    { name: 'HT5', value: 'HT5' },
+                    { name: 'LT4', value: 'LT4' },
+                    { name: 'HT4', value: 'HT4' },
+                    { name: 'LT3', value: 'LT3' },
+                    { name: 'HT3', value: 'HT3' }
                 )
         )
 
