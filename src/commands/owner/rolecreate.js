@@ -48,6 +48,15 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function withTimeout(promise, ms, label) {
+    return Promise.race([
+        promise,
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+        )
+    ]);
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('rolecreate')
@@ -96,33 +105,46 @@ module.exports = {
         const failures = [];
 
         for (const spec of specs) {
+            console.log(`[RoleCreate] Processing role: ${spec.name}`);
             try {
                 let role = discordRoles.find(r => r.name === spec.name);
 
                 if (!role) {
-                    role = await interaction.guild.roles.create({
-                        name: spec.name,
-                        reason: 'AsianTiers role creation command'
-                    });
+                    console.log(`[RoleCreate] Creating role: ${spec.name}`);
+                    role = await withTimeout(
+                        interaction.guild.roles.create({
+                            name: spec.name,
+                            reason: 'AsianTiers role creation command'
+                        }),
+                        15000,
+                        `create ${spec.name}`
+                    );
                     discordRoles.set(role.id, role);
                     created++;
+                    console.log(`[RoleCreate] Created role: ${spec.name} (${role.id})`);
                     await sleep(250);
                 } else {
                     reused++;
+                    console.log(`[RoleCreate] Reusing existing role: ${spec.name} (${role.id})`);
                 }
 
-                await roleConfig.upsertRoleConfig(
-                    spec.key,
-                    spec.name,
-                    spec.category,
-                    spec.gamemode || null,
-                    null,
-                    role.id
+                await withTimeout(
+                    roleConfig.upsertRoleConfig(
+                        spec.key,
+                        spec.name,
+                        spec.category,
+                        spec.gamemode || null,
+                        null,
+                        role.id
+                    ),
+                    15000,
+                    `save ${spec.name}`
                 );
+                console.log(`[RoleCreate] Saved role config: ${spec.name}`);
             } catch (error) {
                 failed++;
                 failures.push(`${spec.name}: ${error?.message || error}`);
-                console.error('ROLE CREATE FAILED:', spec.name, error);
+                console.error('[RoleCreate] FAILED:', spec.name, error);
             }
         }
 
