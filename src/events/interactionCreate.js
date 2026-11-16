@@ -106,7 +106,16 @@ module.exports = {
 
                     const guild = interaction.guild;
                     const botMember = guild.members.me;
+
+                    if (!botMember?.permissions?.has(PermissionFlagsBits.ManageRoles)) {
+                        return interaction.editReply({
+                            content: '❌ The bot does not have the Manage Roles permission. Grant it in Server Settings → Roles / Integrations before running this command.',
+                            components: []
+                        });
+                    }
+
                     const roles = await guild.roles.fetch();
+                    const botHighestPosition = botMember.roles.highest.position;
 
                     let deleted = 0;
                     let failed = 0;
@@ -129,17 +138,10 @@ module.exports = {
                             continue;
                         }
 
-                        // Never delete roles the bot cannot manage
-                        if (!role.editable || !role.deletable) {
-                            skipped++;
-                            skippedNames.push(`${role.name} (not deletable)`);
-                            continue;
-                        }
-
                         // Never delete roles at or above the bot's highest role
-                        if (botMember && role.position >= botMember.roles.highest.position) {
+                        if (role.position >= botHighestPosition) {
                             skipped++;
-                            skippedNames.push(`${role.name} (above bot)`);
+                            skippedNames.push(`${role.name} (above or equal to bot)`);
                             continue;
                         }
 
@@ -149,8 +151,8 @@ module.exports = {
                             await new Promise(resolve => setTimeout(resolve, 250));
                         } catch (error) {
                             failed++;
-                            failedNames.push(`${role.name}: ${error?.message || error}`);
-                            console.error('WIPE ROLE DELETE ERROR:', role.name, error);
+                            failedNames.push(`${role.name}: ${error?.code || ''} ${error?.message || error}`);
+                            console.error('WIPE ROLE DELETE ERROR:', role.name, 'code=', error?.code, error);
                         }
                     }
 
