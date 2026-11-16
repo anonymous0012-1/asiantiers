@@ -9,7 +9,7 @@ const CACHE_TTL = 60 * 1000;
 const DEFAULT_ROLE_IDS = {
     tester: '1570451868943908884',
     blacklist: '1570451889781342430',
-    verified: '1570451921880354988',
+    verified: '1571879625481519216',
     booster: '1537808534178111548',
     vip: '1570451853651484712',
     high_result_manager: '1570451894185234472',
