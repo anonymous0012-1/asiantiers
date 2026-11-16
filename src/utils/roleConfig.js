@@ -29,7 +29,7 @@ async function loadRoleConfigs(force = false, guildId = null) {
     try {
         const result = await supabase
             .from('kairo_role_configs')
-            .select('role_key, role_name, role_category, gamemode, tier, role_id');
+            .select('role_key, role_name, category, gamemode, tier, role_id');
         data = result.data;
         error = result.error;
     } catch (e) {
@@ -111,7 +111,7 @@ async function upsertRoleConfig(roleKey, roleName, category, gamemode, tier, rol
         .upsert({
             role_key: roleKey,
             role_name: roleName,
-            role_category: category,
+            category: category,
             gamemode: gamemode || null,
             tier: tier || null,
             role_id: roleId,

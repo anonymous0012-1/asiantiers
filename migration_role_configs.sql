@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS public.kairo_role_configs (
     id bigserial PRIMARY KEY,
     role_key text NOT NULL UNIQUE,
     role_name text NOT NULL,
-    role_category text,
+    category text,
     gamemode text,
     tier text,
     role_id text NOT NULL,
