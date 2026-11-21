@@ -447,15 +447,13 @@ module.exports = {
         latestResult?.new_tier ||
         'Unranked';
 
-    // LT3 or higher
-    const eligibleTiers = [
-        'LT3',
-        'HT3'
-    ];
+    // HT3 or higher (HT3+)
+    const tierSystem = require('../utils/tierSystem');
+    const isHT3PlusTier = tierSystem.tierRank(currentTier) >= tierSystem.tierRank('HT3');
 
     if (
         !isAllowlisted &&
-        !eligibleTiers.includes(currentTier)
+        !isHT3PlusTier
     ) {
 
         return await interaction.reply({
