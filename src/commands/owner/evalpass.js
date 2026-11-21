@@ -15,6 +15,7 @@ const perms = require('../../utils/permissions');
 const roleConfig = require('../../utils/roleConfig');
 
 const HIGH_TEST_CATEGORY_ID = '1570452104458276955';
+const STAFF_ROLE_ID = '1571847726621003822';
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -78,7 +79,9 @@ module.exports = {
             });
         }
 
-        const staffRoleIds = (staffRoles || []).map(row => String(row.role_id));
+        const staffRoleIds = (staffRoles || [])
+            .map(row => String(row.role_id))
+            .filter(id => /^\d+$/.test(id));
 
         // Fetch player profile
         const { data: player, error: playerError } = await supabase
@@ -98,14 +101,24 @@ module.exports = {
             .replace(/[^a-z0-9]/g, '')
             .slice(0, 18) || 'player';
 
-        // Permission overwrites for high test ticket
+        // Resolve users and roles to avoid "not a cached User or Role" errors
+        const everyoneRole = interaction.guild.roles.everyone;
+
+        let playerUser = null;
+        try { playerUser = await interaction.client.users.fetch(playerId); } catch (e) { console.error(e); }
+
+        let ownerUser = null;
+        try { ownerUser = await interaction.client.users.fetch(config.ownerId); } catch (e) { console.error(e); }
+
+        const botUser = interaction.client.user;
+
         const permissionOverwrites = [
             {
-                id: interaction.guild.roles.everyone.id,
+                id: everyoneRole,
                 deny: [PermissionFlagsBits.ViewChannel]
             },
             {
-                id: playerId,
+                id: playerUser || playerId,
                 allow: [
                     PermissionFlagsBits.ViewChannel,
                     PermissionFlagsBits.SendMessages,
@@ -114,7 +127,7 @@ module.exports = {
                 ]
             },
             {
-                id: config.ownerId,
+                id: ownerUser || config.ownerId,
                 allow: [
                     PermissionFlagsBits.ViewChannel,
                     PermissionFlagsBits.SendMessages,
@@ -123,7 +136,7 @@ module.exports = {
                 ]
             },
             {
-                id: interaction.client.user.id,
+                id: botUser,
                 allow: [
                     PermissionFlagsBits.ViewChannel,
                     PermissionFlagsBits.SendMessages,
@@ -131,17 +144,45 @@ module.exports = {
                     PermissionFlagsBits.ManageChannels,
                     PermissionFlagsBits.AttachFiles
                 ]
-            },
-            ...staffRoleIds.map(roleId => ({
-                id: roleId,
-                allow: [
-                    PermissionFlagsBits.ViewChannel,
-                    PermissionFlagsBits.SendMessages,
-                    PermissionFlagsBits.ReadMessageHistory,
-                    PermissionFlagsBits.AttachFiles
-                ]
-            }))
+            }
         ];
+
+        for (const roleId of staffRoleIds) {
+            let role = interaction.guild.roles.cache.get(roleId);
+            if (!role) {
+                try { role = await interaction.guild.roles.fetch(roleId); } catch (e) { role = null; }
+            }
+            if (role) {
+                permissionOverwrites.push({
+                    id: role,
+                    allow: [
+                        PermissionFlagsBits.ViewChannel,
+                        PermissionFlagsBits.SendMessages,
+                        PermissionFlagsBits.ReadMessageHistory,
+                        PermissionFlagsBits.AttachFiles
+                    ]
+                });
+            }
+        }
+
+        // Ensure required staff role is included even if not in DB
+        if (!staffRoleIds.includes(STAFF_ROLE_ID)) {
+            let role = interaction.guild.roles.cache.get(STAFF_ROLE_ID);
+            if (!role) {
+                try { role = await interaction.guild.roles.fetch(STAFF_ROLE_ID); } catch (e) { role = null; }
+            }
+            if (role) {
+                permissionOverwrites.push({
+                    id: role,
+                    allow: [
+                        PermissionFlagsBits.ViewChannel,
+                        PermissionFlagsBits.SendMessages,
+                        PermissionFlagsBits.ReadMessageHistory,
+                        PermissionFlagsBits.AttachFiles
+                    ]
+                });
+            }
+        }
 
         try {
             // Move to high testing category
@@ -150,12 +191,30 @@ module.exports = {
             await channel.setTopic(`HT_USER:${playerId} | GAMEMODE:${gamemode}`);
 
             // Apply permission overwrites
-            await channel.permissionOverwrites.set(permissionOverwrites); 
+            await channel.permissionOverwrites.set(permissionOverwrites);
         } catch (error) {
             console.error('EVALPASS MOVE ERROR:', error);
             return interaction.editReply({
                 content: '<:crosss:1570104768628531290> Failed to move the ticket into High Testing.'
             });
+        }
+
+        // Remove previous normal testing panel
+        try {
+            const messages = await channel.messages.fetch({ limit: 50 });
+            for (const msg of messages.values()) {
+                if (!msg.author?.bot) continue;
+                const isNormalPanel = msg.components?.some(row =>
+                    row.components?.some(c =>
+                        ['test_close', 'test_skip', 'test_tier_select'].includes(c.customId)
+                    )
+                );
+                if (isNormalPanel) {
+                    await msg.delete().catch(() => {});
+                }
+            }
+        } catch (e) {
+            console.error('EVALPASS PANEL CLEANUP ERROR:', e);
         }
 
         // Send high testing panel
@@ -165,13 +224,13 @@ module.exports = {
 
         const ticketEmbed = new EmbedBuilder()
             .setColor(config.colors.primary)
-            .setTitle(`${gameEmoji} ${displayName} — High Test Ticket`)
-            .setDescription(`Welcome <@${playerId}>!\n\nYour **High Test** application has been created.\nA tester will review your application shortly.`)
+            .setTitle(`${gameEmoji} ${displayName} High Test Ticket`)
+            .setDescription(`Welcome <@${playerId}>!\n\nYour High Test application has been created.\nA tester will review your application shortly.`)
             .addFields(
-                { name: '👤 Player', value: `<@${playerId}>\n\`${player.ign}\``, inline: true },
-                { name: '🎮 Gamemode', value: `${gameEmoji} **${displayName}**`, inline: true }
+                { name: 'Player', value: `<@${playerId}>\n\`${player.ign}\``, inline: true },
+                { name: 'Gamemode', value: `${gameEmoji} **${displayName}**`, inline: true }
             )
-            .setFooter({ text: 'UniversalTiers • High Tests' })
+            .setFooter({ text: 'UniversalTiers High Tests' })
             .setTimestamp();
 
         const ticketButtons = new ActionRowBuilder()
@@ -179,17 +238,20 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId('high_ticket_close')
                     .setLabel('Close')
+                    .setEmoji('<:crosss:1570104768628531290>')
                     .setStyle(ButtonStyle.Danger),
                 new ButtonBuilder()
                     .setCustomId('high_ticket_skip')
                     .setLabel('Skip')
+                    .setEmoji('<:tick:1570104808055111742>')
                     .setStyle(ButtonStyle.Secondary)
             );
 
         await channel.send({
             content: [
                 `<@${playerId}>`,
-                ...staffRoleIds.map(roleId => `<@&${roleId}>`)
+                ...staffRoleIds.map(roleId => `<@&${roleId}>`),
+                `<@&${STAFF_ROLE_ID}>`
             ].join(' '),
             embeds: [ticketEmbed],
             components: [ticketButtons]

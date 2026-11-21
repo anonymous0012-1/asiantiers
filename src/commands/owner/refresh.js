@@ -42,7 +42,7 @@ module.exports = {
 
             await interaction.reply({
                 content:
-                    `🔄 **${gamemode}** queue panel has been refreshed.`,
+                    ` **${gamemode}** queue panel has been refreshed.`,
                 flags: MessageFlags.Ephemeral
             });
 

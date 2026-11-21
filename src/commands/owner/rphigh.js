@@ -280,12 +280,12 @@ module.exports = {
 
                 return interaction.editReply({
                     content:
-                        '⚠️ Discord role was updated, but the result could not be saved.'
+                        ' Discord role was updated, but the result could not be saved.'
                 });
             }
 
             console.log(
-                `<:tick:1570104808055111742> Result saved: ${player.ign} | ${gamemode} | ${previousTier} → ${tier}`
+                `<:tick:1570104808055111742> Result saved: ${player.ign} | ${gamemode} | ${previousTier}  ${tier}`
             );
 
             // =====================================================
@@ -325,7 +325,7 @@ module.exports = {
 
                 return interaction.editReply({
                     content:
-                        '⚠️ Result was saved, but the 7-day cooldown could not be saved.'
+                        ' Result was saved, but the 7-day cooldown could not be saved.'
                 });
             }
 
@@ -391,12 +391,12 @@ module.exports = {
                     await websiteResponse.text();
 
                 console.log(
-                    '🌐 Website API Status:',
+                    ' Website API Status:',
                     websiteResponse.status
                 );
 
                 console.log(
-                    '🌐 Website API Response:',
+                    ' Website API Response:',
                     websiteText
                 );
 
@@ -446,7 +446,7 @@ module.exports = {
                 const resultEmbed = {
 
                     title:
-                        `${player.ign}'s Tier Update 🏆`,
+                        `${player.ign}'s Tier Update `,
 
                     color:
                         0x8B0000,
@@ -511,7 +511,7 @@ module.exports = {
 
                     footer: {
                         text:
-                            'UniversalTiers • Minecraft Tier Testing'
+                            'UniversalTiers  Minecraft Tier Testing'
                     },
 
                     timestamp:
@@ -542,7 +542,7 @@ module.exports = {
                     `<:tick:1570104808055111742> Result submitted for **${player.ign}** in **${gamemode}**.\n\n` +
                     `Previous Tier: **${previousTier}**\n` +
                     `New Tier: **${tier}**\n\n` +
-                    `⏳ **${gamemode} cooldown:** <t:${unixCooldown}:R>`
+                    ` **${gamemode} cooldown:** <t:${unixCooldown}:R>`
             });
 
         } catch (error) {

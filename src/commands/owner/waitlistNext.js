@@ -340,8 +340,8 @@ module.exports = {
                             )
                             .setTitle(
                                 newPosition === 1
-                                    ? "🔔 You are #1"
-                                    : "🔔 You are #2"
+                                    ? " You are #1"
+                                    : " You are #2"
                             )
                             .setDescription(
                                 newPosition === 1
@@ -350,7 +350,7 @@ module.exports = {
                             )
                             .setFooter({
                                 text:
-                                    "UniversalTiers • Testing Queue"
+                                    "UniversalTiers  Testing Queue"
                             });
 
                     await user.send({
@@ -514,7 +514,7 @@ module.exports = {
                         config.colors.primary
                     )
                     .setTitle(
-                        "🎫 Your Testing Ticket Is Ready"
+                        " Your Testing Ticket Is Ready"
                     )
                     .setDescription(
                         `Your **${gamemode}** testing ticket has been opened.\n\n` +
@@ -536,7 +536,7 @@ module.exports = {
                     )
                     .setFooter({
                         text:
-                            "UniversalTiers • Testing Session"
+                            "UniversalTiers  Testing Session"
                     })
                     .setTimestamp();
 

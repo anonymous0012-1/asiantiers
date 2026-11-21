@@ -128,7 +128,7 @@ module.exports = {
                         config.gamemodeNames?.[mode] || mode;
 
                     lines.push(
-                        `${displayName} — ${emoji ? `${emoji} ` : ''}**${tier}**`
+                        `${displayName}  ${emoji ? `${emoji} ` : ''}**${tier}**`
                     );
                 }
 
@@ -140,7 +140,7 @@ module.exports = {
                     })
                     .setDescription(lines.join('\n'))
                     .setFooter({
-                        text: 'UniversalTiers • Player Tiers'
+                        text: 'UniversalTiers  Player Tiers'
                     });
 
                 return message.reply({
@@ -191,7 +191,7 @@ module.exports = {
                     }
                 )
                 .setFooter({
-                    text: 'UniversalTiers • Player Information'
+                    text: 'UniversalTiers  Player Information'
                 })
                 .setTimestamp();
 

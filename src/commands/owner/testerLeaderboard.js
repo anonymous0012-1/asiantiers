@@ -35,10 +35,10 @@ module.exports = {
 
                 const embed = new EmbedBuilder()
                     .setColor(config.colors.primary)
-                    .setTitle("🏆 Tester Leaderboard")
+                    .setTitle(" Tester Leaderboard")
                     .setDescription("No tests have been completed yet.")
                     .setFooter({
-                        text: "UniversalTiers • Tester Leaderboard"
+                        text: "UniversalTiers  Tester Leaderboard"
                     })
                     .setTimestamp();
 
@@ -68,39 +68,39 @@ module.exports = {
                     let position;
 
                     if (index === 0) {
-                        position = "🥇";
+                        position = "";
                     } else if (index === 1) {
-                        position = "🥈";
+                        position = "";
                     } else if (index === 2) {
-                        position = "🥉";
+                        position = "";
                     } else {
                         position = `**${index + 1}.**`;
                     }
 
-                    return `${position} ${emojis.tester} <@${testerId}> — **${count} tests**`;
+                    return `${position} ${emojis.tester} <@${testerId}>  **${count} tests**`;
                 })
                 .join("\n");
 
             const embed = new EmbedBuilder()
                 .setColor(config.colors.primary)
-                .setTitle("🏆 Tester Leaderboard")
+                .setTitle(" Tester Leaderboard")
                 .setDescription(
                     `Top testers ranked by their total completed tests.\n\n${leaderboardText}`
                 )
                 .addFields(
                     {
-                        name: "🧪 Total Tests",
+                        name: " Total Tests",
                         value: `**${results.length}**`,
                         inline: true
                     },
                     {
-                        name: "👥 Testers",
+                        name: " Testers",
                         value: `**${leaderboard.length}**`,
                         inline: true
                     }
                 )
                 .setFooter({
-                    text: "UniversalTiers • Tester Leaderboard"
+                    text: "UniversalTiers  Tester Leaderboard"
                 })
                 .setTimestamp();
 

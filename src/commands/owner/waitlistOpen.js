@@ -154,7 +154,7 @@ try {
 
             await interaction.editReply({
                 content:
-                    `🟢 **${gamemode}** testing queue is now OPEN.`
+                    ` **${gamemode}** testing queue is now OPEN.`
             });
 
         } catch (error) {

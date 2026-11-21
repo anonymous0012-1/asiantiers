@@ -164,7 +164,7 @@ module.exports = {
                     );
                 } else {
                     console.log(
-                        `<:tick:1570104808055111742> Website synced: ${player.ign} → ${gamemode} → Unranked`
+                        `<:tick:1570104808055111742> Website synced: ${player.ign}  ${gamemode}  Unranked`
                     );
                 }
             }

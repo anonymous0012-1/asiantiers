@@ -19,7 +19,7 @@ module.exports = {
     async execute(interaction) {
 
         const embed = new EmbedBuilder()
-            .setTitle('<:updates:1570104881262366861> UniversalTiers — Testing Waitlist')
+            .setTitle('<:updates:1570104881262366861> UniversalTiers  Testing Waitlist')
             .setColor(0x8B0000)
             .setDescription(
                 '**Welcome to the UniversalTiers Testing System!**\n\n' +
@@ -34,12 +34,12 @@ module.exports = {
                 'When a tester becomes available, you will be contacted to begin your test.\n\n' +
 
                 '**Regions**\n' +
-                '`NA` • `EU` • `AS/AU` • `SA`\n\n' +
+                '`NA`  `EU`  `AS/AU`  `SA`\n\n' +
 
                 '<:POLL:1570104973407027230> **Important:** You must have a registered profile before joining a waitlist.'
             )
             .setFooter({
-                text: 'UniversalTiers • Minecraft Tier Testing'
+                text: 'UniversalTiers  Minecraft Tier Testing'
             })
             .setTimestamp();
 
@@ -52,6 +52,7 @@ module.exports = {
                 new ButtonBuilder()
                     .setCustomId('register_profile')
                     .setLabel('Register / Update Profile')
+                    .setEmoji('<:open:1570104721392541696>')
                     .setStyle(ButtonStyle.Primary)
             );
 

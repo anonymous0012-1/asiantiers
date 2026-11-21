@@ -46,7 +46,7 @@ module.exports = {
 
             return interaction.editReply({
                 content:
-                    `📊 **${user.username}** has not completed any tests yet.`
+                    ` **${user.username}** has not completed any tests yet.`
             });
         }
 
@@ -78,7 +78,7 @@ module.exports = {
                 const emoji =
                     emojis.gamemodes[gamemode] || "";
 
-                return `${emoji} **${gamemode}** — **${count} tests**`;
+                return `${emoji} **${gamemode}**  **${count} tests**`;
             })
             .join("\n");
 
@@ -117,7 +117,7 @@ module.exports = {
         const tierText = tierOrder
             .filter(tier => tierStats[tier])
             .map(tier =>
-                `**${tier}** — **${tierStats[tier]}**`
+                `**${tier}**  **${tierStats[tier]}**`
             )
             .join("\n");
 
@@ -152,9 +152,9 @@ module.exports = {
                 const tiersText = tierOrder
                     .filter(tier => tiers[tier])
                     .map(tier =>
-                        `**${tier}** × ${tiers[tier]}`
+                        `**${tier}**  ${tiers[tier]}`
                     )
-                    .join(" • ");
+                    .join("  ");
 
                 return `${emoji} **${gamemode}**\n${tiersText}`;
 
@@ -167,7 +167,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor(config.colors.primary)
-            .setTitle("🧪 Tester Statistics")
+            .setTitle(" Tester Statistics")
             .setThumbnail(
                 user.displayAvatarURL({
                     dynamic: true,
@@ -176,31 +176,31 @@ module.exports = {
             )
             .setDescription(
                 `${emojis.tester} **Tester:** <@${user.id}>\n` +
-                `📊 Complete testing statistics`
+                ` Complete testing statistics`
             )
             .addFields(
                 {
-                    name: "🧪 Total Tests",
+                    name: " Total Tests",
                     value: `**${totalTests}**`,
                     inline: true
                 },
                 {
-                    name: "🎮 Gamemodes Tested",
+                    name: " Gamemodes Tested",
                     value: `**${Object.keys(gamemodeStats).length}**`,
                     inline: true
                 },
                 {
-                    name: "🏆 Different Tiers",
+                    name: " Different Tiers",
                     value: `**${Object.keys(tierStats).length}**`,
                     inline: true
                 },
                 {
-                    name: "🎮 Tests By Gamemode",
+                    name: " Tests By Gamemode",
                     value: gamemodeText || "No data.",
                     inline: false
                 },
                 {
-                    name: "🏆 Tiers Given",
+                    name: " Tiers Given",
                     value: tierText || "No data.",
                     inline: false
                 },
@@ -214,7 +214,7 @@ module.exports = {
                 }
             )
             .setFooter({
-                text: "UniversalTiers • Tester Statistics"
+                text: "UniversalTiers  Tester Statistics"
             })
             .setTimestamp();
 

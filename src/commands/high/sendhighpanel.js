@@ -51,7 +51,7 @@ if (!interaction.memberPermissions?.has('Administrator')) {
                 .setColor(0x5865F2)
 
                 .setAuthor({
-                    name: 'UniversalTiers | HIGH TESTS — NOW OPEN',
+                    name: 'UniversalTiers | HIGH TESTS  NOW OPEN',
                     iconURL:
                         'https://cdn.discordapp.com/emojis/1534871592730099743.png'
                 })
@@ -65,13 +65,13 @@ if (!interaction.memberPermissions?.has('Administrator')) {
                         `${trophyEmoji} | HT Requirements`,
 
                     value:
-                        '• You must be **LT3 or higher** to apply for a High Test.\n' +
-                        '• You must pass your **HT Evaluation** before opening an **HT Ticket**.'
+                        ' You must be **LT3 or higher** to apply for a High Test.\n' +
+                        ' You must pass your **HT Evaluation** before opening an **HT Ticket**.'
                 })
 
                 .addFields({
                     name:
-                        '────────────────────────────',
+                        '',
 
                     value:
                         '**Good luck with your tests!**',

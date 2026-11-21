@@ -6,7 +6,7 @@ const supabase = require('../../database/supabase');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('removehighcooldown')
-        .setDescription('Remove a player’s High Test cooldown')
+        .setDescription('Remove a players High Test cooldown')
         .addUserOption(option =>
             option
                 .setName('player')
@@ -46,7 +46,7 @@ module.exports = {
 
             if (!data || data.length === 0) {
                 return interaction.editReply({
-                    content: `ℹ️ ${player} does not have a High Test cooldown.`
+                    content: ` ${player} does not have a High Test cooldown.`
                 });
             }
 

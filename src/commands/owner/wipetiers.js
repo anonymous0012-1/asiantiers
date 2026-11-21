@@ -102,7 +102,7 @@ module.exports = {
                     await interaction.guild.members.fetch(userId);
             } catch (error) {
                 console.log(
-                    `ℹ️ ${userId} is not currently in the server.`
+                    ` ${userId} is not currently in the server.`
                 );
             }
 
@@ -157,7 +157,7 @@ module.exports = {
             } else {
 
                 console.log(
-                    "ℹ️ Player left server, skipping Discord role removal."
+                    " Player left server, skipping Discord role removal."
                 );
             }
 
@@ -262,7 +262,7 @@ module.exports = {
                         websiteSuccess++;
 
                         console.log(
-                            `<:tick:1570104808055111742> Website synced: ${player.ign} → ${gamemode} → Unranked`
+                            `<:tick:1570104808055111742> Website synced: ${player.ign}  ${gamemode}  Unranked`
                         );
                     }
 
@@ -288,12 +288,12 @@ module.exports = {
                     `Discord tier roles removed: **${removed}**`;
             } else {
                 memberStatus =
-                    `Discord member not in server — roles skipped`;
+                    `Discord member not in server  roles skipped`;
             }
 
             await interaction.editReply({
                 content:
-                    `🧹 **Tier Wipe Complete**\n\n` +
+                    ` **Tier Wipe Complete**\n\n` +
 
                     `**Player:** ${player.ign}\n` +
 
@@ -304,7 +304,7 @@ module.exports = {
                     `Website gamemodes reset: **${websiteSuccess}/${gamemodes.length}**\n` +
 
                     (websiteFailed > 0
-                        ? `⚠️ Website failures: **${websiteFailed}**\n\n`
+                        ? ` Website failures: **${websiteFailed}**\n\n`
                         : `\n`) +
 
                     `All available gamemodes are now **Unranked**.`

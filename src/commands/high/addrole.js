@@ -20,9 +20,9 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        if (interaction.user.id !== config.ownerId) {
+        if (interaction.user.id !== config.ownerId && !interaction.member?.roles?.cache?.has('1571847726621003822')) {
             return interaction.reply({
-                content: '<:crosss:1570104768628531290> Only the bot owner can use this command.',
+                content: '<:crosss:1570104768628531290> Only authorized High Test staff can use this command.',
                 flags: MessageFlags.Ephemeral
             });
         }

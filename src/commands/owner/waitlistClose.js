@@ -113,7 +113,7 @@ module.exports = {
 
                 return interaction.editReply({
                     content:
-                        '⚠️ Queue was closed, but the waiting players could not be removed from the queue.'
+                        ' Queue was closed, but the waiting players could not be removed from the queue.'
                 });
             }
 
@@ -143,7 +143,7 @@ module.exports = {
             return interaction.editReply({
                 content:
                     `<:close:1570105019326275604> **${gamemode}** queue has been closed.\n` +
-                    `🗑️ All players were removed from the queue.`
+                    ` All players were removed from the queue.`
             });
 
         } catch (error) {

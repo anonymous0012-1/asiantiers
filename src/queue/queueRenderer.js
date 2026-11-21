@@ -197,7 +197,7 @@ module.exports = {
                 '';
 
             const openEmoji =
-                emojis.ui?.queueopen || '🟢';
+                emojis.ui?.queueopen || '';
 
             const closeEmoji =
                 emojis.ui?.queueclose || '<:close:1570105019326275604>';
@@ -226,7 +226,7 @@ module.exports = {
                             inline: false
                         },
                         {
-                            name: '🕐 Session Ended',
+                            name: ' Session Ended',
                             value: queue.closed_at
                                 ? `<t:${Math.floor(
                                     new Date(queue.closed_at).getTime() / 1000
@@ -236,7 +236,7 @@ module.exports = {
                         }
                     )
                     .setFooter({
-                        text: 'UniversalTiers • Thank you for testing!'
+                        text: 'UniversalTiers  Thank you for testing!'
                     });
 
                 row = new ActionRowBuilder().addComponents(
@@ -269,7 +269,7 @@ module.exports = {
                         .map((member, index) => {
 
                             const priority = member.priority
-                                ? ' ⭐'
+                                ? ' '
                                 : '';
 
                             return `${index + 1}. <@${member.discord_id}>${priority}`;
@@ -295,7 +295,7 @@ module.exports = {
                     .setColor(0x5865F2)
                     .setDescription(
                         `${testerEmoji} **Tester(s) Available!**\n\n` +
-                        '🕐 The queue updates automatically.\n' +
+                        ' The queue updates automatically.\n' +
                         'Use **Join Queue** / **Leave Queue** to manage your position.'
                     )
                     .addFields(
@@ -311,7 +311,7 @@ module.exports = {
                         }
                     )
                     .setFooter({
-                        text: 'UniversalTiers • Testing Queue'
+                        text: 'UniversalTiers  Testing Queue'
                     })
                     .setTimestamp();
 

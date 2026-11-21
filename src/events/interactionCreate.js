@@ -92,7 +92,7 @@ module.exports = {
                 if (customId === 'wipeallroles_confirm' || customId === 'wipeallroles_cancel') {
                     if (interaction.user.id !== '1105165947590938866') {
                         return interaction.reply({
-                            content: '❌ You do not have permission to use this.',
+                            content: ' You do not have permission to use this.',
                             flags: MessageFlags.Ephemeral
                         });
                     }
@@ -111,7 +111,7 @@ module.exports = {
 
                     if (!botMember?.permissions?.has(PermissionFlagsBits.ManageRoles)) {
                         return interaction.editReply({
-                            content: '❌ The bot does not have the Manage Roles permission. Grant it in Server Settings → Roles / Integrations before running this command.',
+                            content: ' The bot does not have the Manage Roles permission. Grant it in Server Settings  Roles / Integrations before running this command.',
                             components: []
                         });
                     }
@@ -171,7 +171,7 @@ module.exports = {
                     roleConfig.clearRoleConfigCache();
 
                     const summary = [
-                        '🧹 Wipe all deletable roles complete.',
+                        ' Wipe all deletable roles complete.',
                         `Deleted: ${deleted}`,
                         `Failed: ${failed}`,
                         `Skipped: ${skipped}`,
@@ -331,7 +331,7 @@ module.exports = {
 
                         return await interaction.reply({
                             content:
-                                `⏳ You are on a **High Test cooldown**.\n\n` +
+                                ` You are on a **High Test cooldown**.\n\n` +
                                 `You can open another High Test ticket <t:${unix}:R>.`,
                             flags:
                                 MessageFlags.Ephemeral
@@ -591,15 +591,13 @@ module.exports = {
     // Owner bypasses the staff-role list.
     // All other users must have a role explicitly added via /addrole.
 
-    const HIGH_TEST_STAFF_ROLE_ID = roleConfig.getRoleIdSync('staff') || '1542798698617249842';
+    const STAFF_ROLE_ID = '1571847726621003822';
 
     const memberRoleIds = interaction.member?.roles?.cache
         ? [...interaction.member.roles.cache.keys()]
         : [];
 
-    const isHighTestStaff = memberRoleIds.includes(
-        HIGH_TEST_STAFF_ROLE_ID
-    );
+    const isHighTestStaff = memberRoleIds.includes(STAFF_ROLE_ID);
 
     if (!isOwner && !isHighTestStaff) {
         return await interaction.reply({
@@ -698,7 +696,7 @@ module.exports = {
                     }
 
                     // =============================================
-                    // SORT OLD → NEW
+                    // SORT OLD  NEW
                     // =============================================
 
                     allMessages.sort(
@@ -847,7 +845,7 @@ module.exports = {
                                 config.colors.primary
                             )
                             .setTitle(
-                                '📄 High Test Transcript'
+                                ' High Test Transcript'
                             )
                             .addFields(
                                 {
@@ -940,7 +938,7 @@ module.exports = {
 
                         return await interaction.editReply({
                             content:
-                                '⚠️ Transcript was saved, but the 15-day cooldown could not be saved. Ticket was NOT deleted.'
+                                ' Transcript was saved, but the 15-day cooldown could not be saved. Ticket was NOT deleted.'
                         });
                     }
 
@@ -952,8 +950,8 @@ module.exports = {
 
                     await interaction.editReply({
                         content: isSkip
-                            ? '⏭️ Transcript saved successfully. Closing ticket without a cooldown.'
-                            : '<:tick:1570104808055111742> Transcript saved successfully.\n<:close:1570105019326275604> 15-day High Test cooldown applied.\n🗑️ Closing ticket...'
+                            ? ' Transcript saved successfully. Closing ticket without a cooldown.'
+                            : '<:tick:1570104808055111742> Transcript saved successfully.\n<:close:1570105019326275604> 15-day High Test cooldown applied.\n Closing ticket...'
                     });
 
                     // =============================================
@@ -1025,7 +1023,7 @@ module.exports = {
                         }
 
                         await interaction.editReply({
-                            content: '⏭️ Player skipped. No cooldown applied.'
+                            content: ' Player skipped. No cooldown applied.'
                         });
 
                         setTimeout(async () => {
@@ -1224,6 +1222,53 @@ module.exports = {
                         });
                     }
 
+                    // HT3+ players get a dedicated request panel instead of a waitlist role.
+                    let playerProfile = null;
+                    try {
+                        const { data: pp } = await supabase
+                            .from('players')
+                            .select('ign, region')
+                            .eq('discord_id', interaction.user.id)
+                            .maybeSingle();
+                        playerProfile = pp;
+                    } catch (e) {}
+
+                    let currentTier = 'Unranked';
+                    try {
+                        const { data: latestResult } = await supabase
+                            .from('results')
+                            .select('new_tier, created_at')
+                            .eq('discord_id', interaction.user.id)
+                            .eq('gamemode', gamemode)
+                            .order('created_at', { ascending: false })
+                            .limit(1)
+                            .maybeSingle();
+                        if (latestResult?.new_tier) currentTier = latestResult.new_tier;
+                    } catch (e) {}
+
+                    const tierSystem = require('../utils/tierSystem');
+                    const isHT3Plus = tierSystem.tierRank(currentTier) >= tierSystem.tierRank('HT3');
+
+                    if (isHT3Plus) {
+                        const embed = new EmbedBuilder()
+                            .setColor(config.colors.primary)
+                            .setTitle('<:T1:1544576709733519380> HT3+ Request Testing')
+                            .setDescription('Your HT3+ request has been recorded.')
+                            .addFields(
+                                { name: 'Current Tier', value: `${currentTier}`, inline: true },
+                                { name: 'Preferred Server', value: `${playerProfile?.region || 'Not specified'}`, inline: true }
+                            )
+                            .setFooter({ text: 'UniversalTiers Request Testing' })
+                            .setTimestamp();
+
+                        if (!interaction.deferred && !interaction.replied) {
+                            await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+                        } else {
+                            await interaction.editReply({ embeds: [embed] });
+                        }
+                        return;
+                    }
+
                     const roleId =
                         roleConfig.getRoleIdSync(`waitlist_${gamemode}`) ||
                         config.roles.waitlist?.[
@@ -1262,7 +1307,7 @@ module.exports = {
                         });
                     }
 
-﻿                    if (
+                    if (
                         interaction.member.roles.cache.has(
                             roleId
                         )
@@ -1412,7 +1457,7 @@ module.exports = {
 
                     return await interaction.reply({
                         content:
-                            '🔄 Queue refreshed.',
+                            ' Queue refreshed.',
                         flags:
                             MessageFlags.Ephemeral
                     });
@@ -1481,7 +1526,7 @@ module.exports = {
 
                             return await interaction.reply({
                                 content:
-                                    `⏳ **You are on ${gamemode} testing cooldown.**\n\n` +
+                                    ` **You are on ${gamemode} testing cooldown.**\n\n` +
                                     `You can test **${gamemode}** again <t:${unix}:R>.`,
                                 flags:
                                     MessageFlags.Ephemeral
@@ -1818,8 +1863,8 @@ module.exports = {
                                     )
                                     .setTitle(
                                         position === 1
-                                            ? '🔔 You are #1'
-                                            : '🔔 You are #2'
+                                            ? ' You are #1'
+                                            : ' You are #2'
                                     )
                                     .setDescription(
                                         position === 1
@@ -1828,7 +1873,7 @@ module.exports = {
                                     )
                                     .setFooter({
                                         text:
-                                            'UniversalTiers • Testing Queue'
+                                            'UniversalTiers  Testing Queue'
                                     });
 
                             await interaction.user.send({
@@ -2019,8 +2064,8 @@ module.exports = {
                                         )
                                         .setTitle(
                                             newPosition === 1
-                                                ? '🔔 You are #1'
-                                                : '🔔 You are #2'
+                                                ? ' You are #1'
+                                                : ' You are #2'
                                         )
                                         .setDescription(
                                             newPosition === 1
@@ -2029,7 +2074,7 @@ module.exports = {
                                         )
                                         .setFooter({
                                             text:
-                                                'UniversalTiers • Testing Queue'
+                                                'UniversalTiers  Testing Queue'
                                         });
 
                                 await user.send({
@@ -2211,7 +2256,7 @@ module.exports = {
 
                         return await interaction.reply({
                             content:
-                                `⏳ You are already on a High Test cooldown.\n\nYou can apply again <t:${unix}:R>.`,
+                                ` You are already on a High Test cooldown.\n\nYou can apply again <t:${unix}:R>.`,
                             flags:
                                 MessageFlags.Ephemeral
                         });
@@ -2390,7 +2435,7 @@ module.exports = {
                                 config.colors.primary
                             )
                             .setTitle(
-                                `${gameEmoji} ${displayName} — High Test Ticket`
+                                `${gameEmoji} ${displayName}  High Test Ticket`
                             )
                             .setDescription(
                                 `Welcome ${interaction.user}!\n\n` +
@@ -2401,7 +2446,7 @@ module.exports = {
 
                                 {
                                     name:
-                                        '👤 Player',
+                                        ' Player',
                                     value:
                                         `${interaction.user}\n\`${player.ign}\``,
                                     inline:
@@ -2410,7 +2455,7 @@ module.exports = {
 
                                 {
                                     name:
-                                        '🎮 Gamemode',
+                                        ' Gamemode',
                                     value:
                                         `${gameEmoji} **${displayName}**`,
                                     inline:
@@ -2419,7 +2464,7 @@ module.exports = {
 
                                 {
                                     name:
-                                        '🏆 Current Tier',
+                                        ' Current Tier',
                                     value:
                                         `\`${currentTier}\``,
                                     inline:
@@ -2428,7 +2473,7 @@ module.exports = {
 
                                 {
                                     name:
-                                        '🌍 Region',
+                                        ' Region',
                                     value:
                                         `\`${region}\``,
                                     inline:
@@ -2437,7 +2482,7 @@ module.exports = {
 
                                 {
                                     name:
-                                        '🖥️ Preferred Server',
+                                        ' Preferred Server',
                                     value:
                                         `\`${preferredServer}\``,
                                     inline:
@@ -2446,7 +2491,7 @@ module.exports = {
                             )
                             .setFooter({
                                 text:
-                                    'UniversalTiers • High Tests'
+                                    'UniversalTiers  High Tests'
                             })
                             .setTimestamp();
 
@@ -2461,6 +2506,9 @@ module.exports = {
                                     .setLabel(
                                         'Close'
                                     )
+                                    .setEmoji(
+                                        '<:crosss:1570104768628531290>'
+                                    )
                                     .setStyle(
                                         ButtonStyle.Danger
                                     ),
@@ -2471,6 +2519,9 @@ module.exports = {
                                     )
                                     .setLabel(
                                         'Skip'
+                                    )
+                                    .setEmoji(
+                                        '<:tick:1570104808055111742>'
                                     )
                                     .setStyle(
                                         ButtonStyle.Secondary
@@ -2618,11 +2669,11 @@ module.exports = {
                                 const websiteText = await websiteResponse.text();
  
                                 console.log(
-                                    '🌐 Registration Website API Status:',
+                                    ' Registration Website API Status:',
                                     websiteResponse.status
                                 );
                                 console.log(
-                                    '🌐 Registration Website API Response:',
+                                    ' Registration Website API Response:',
                                     websiteText
                                 );
  

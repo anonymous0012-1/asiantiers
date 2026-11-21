@@ -173,7 +173,7 @@ const transcriptChannel =
 
             const transcriptEmbed =
                 new EmbedBuilder()
-                    .setTitle('📄 Testing Ticket Transcript')
+                    .setTitle(' Testing Ticket Transcript')
                     .setColor(0x8B0000)
                     .addFields(
                         {
@@ -194,7 +194,7 @@ const transcriptChannel =
                     )
                     .setFooter({
                         text:
-                            'UniversalTiers • Minecraft Tier Testing'
+                            'UniversalTiers  Minecraft Tier Testing'
                     })
                     .setTimestamp();
 

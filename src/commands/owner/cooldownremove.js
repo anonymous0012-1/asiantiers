@@ -83,7 +83,7 @@ module.exports = {
 
                 return interaction.editReply({
                     content:
-                        `ℹ️ <@${user.id}> does not have a **${gamemode}** cooldown.`
+                        ` <@${user.id}> does not have a **${gamemode}** cooldown.`
                 });
             }
 
