@@ -7,7 +7,7 @@ const {
 
 const config = require('../../config/config');
 
-const HIGH_TEST_CATEGORY_ID = '1538792400737148978';
+const HIGH_TEST_CATEGORY_ID = '1570452104458276955';
 
 module.exports = {
     data: new SlashCommandBuilder()

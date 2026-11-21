@@ -9,7 +9,9 @@ const {
     PermissionFlagsBits,
     ButtonBuilder,
     ButtonStyle,
-    AttachmentBuilder
+    AttachmentBuilder,
+    StringSelectMenuBuilder,
+    StringSelectMenuOptionBuilder
 } = require('discord.js');
 
 const config = require('../config/config');
@@ -980,6 +982,78 @@ module.exports = {
                     );
 
                     return;
+                }
+
+                // =================================================
+                // NORMAL TEST CLOSE / SKIP BUTTONS
+                // =================================================
+
+                if (customId === 'test_close' || customId === 'test_skip') {
+                    const isSkip = customId === 'test_skip';
+
+                    if (!perms.isTester(interaction.member)) {
+                        return interaction.reply({
+                            content: '<:crosss:1570104768628531290> Only testers can use this button.',
+                            flags: MessageFlags.Ephemeral
+                        });
+                    }
+
+                    const topic = interaction.channel.topic || '';
+                    const userMatch = topic.match(/PLAYER:(\d+)/);
+                    const gamemodeMatch = topic.match(/GAMEMODE:([A-Za-z]+)/);
+
+                    if (!userMatch) {
+                        return interaction.reply({
+                            content: '<:crosss:1570104768628531290> Could not identify the ticket owner.',
+                            flags: MessageFlags.Ephemeral
+                        });
+                    }
+
+                    const ticketUserId = userMatch[1];
+                    const ticketGamemode = gamemodeMatch ? gamemodeMatch[1] : null;
+
+                    if (isSkip) {
+                        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+                        const { error: sessionError } = await supabase
+                            .from('testing_sessions')
+                            .update({ status: 'CLOSED', closed_at: new Date().toISOString() })
+                            .eq('ticket_channel_id', interaction.channel.id)
+                            .eq('status', 'ACTIVE');
+
+                        if (sessionError) {
+                            console.error('NORMAL TEST SKIP SESSION ERROR:', sessionError);
+                        }
+
+                        await interaction.editReply({
+                            content: '⏭️ Player skipped. No cooldown applied.'
+                        });
+
+                        setTimeout(async () => {
+                            try { await interaction.channel.delete('Normal test ticket skipped'); } catch (e) { console.error(e); }
+                        }, 2500);
+                        return;
+                    }
+
+                    // Close: show tier dropdown
+                    const select = new StringSelectMenuBuilder()
+                        .setCustomId('test_tier_select')
+                        .setPlaceholder('Select the resulting tier')
+                        .addOptions(
+                            { label: 'LT5', value: 'LT5' },
+                            { label: 'HT5', value: 'HT5' },
+                            { label: 'LT4', value: 'LT4' },
+                            { label: 'HT4', value: 'HT4' },
+                            { label: 'LT3', value: 'LT3' },
+                            { label: 'HT3', value: 'HT3' }
+                        );
+
+                    const row = new ActionRowBuilder().addComponents(select);
+
+                    return interaction.reply({
+                        content: 'Select the tier for this test:',
+                        components: [row],
+                        flags: MessageFlags.Ephemeral
+                    });
                 }
 
                 // =================================================
@@ -1999,6 +2073,58 @@ module.exports = {
                             error
                         );
                     }
+
+                    return;
+                }
+
+                return;
+            }
+
+            // =====================================================
+            // STRING SELECT MENUS
+            // =====================================================
+
+            if (interaction.isStringSelectMenu()) {
+                if (interaction.customId === 'test_tier_select') {
+                    if (!perms.isTester(interaction.member)) {
+                        return interaction.reply({
+                            content: '<:crosss:1570104768628531290> Only testers can use this.',
+                            flags: MessageFlags.Ephemeral
+                        });
+                    }
+
+                    const topic = interaction.channel.topic || '';
+                    const userMatch = topic.match(/PLAYER:(\d+)/);
+                    const gamemodeMatch = topic.match(/GAMEMODE:([A-Za-z]+)/);
+
+                    if (!userMatch || !gamemodeMatch) {
+                        return interaction.reply({
+                            content: '<:crosss:1570104768628531290> Could not identify ticket owner or gamemode.',
+                            flags: MessageFlags.Ephemeral
+                        });
+                    }
+
+                    const ticketUserId = userMatch[1];
+                    const ticketGamemode = gamemodeMatch[1];
+                    const tier = interaction.values[0];
+
+                    await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+
+                    const user = await interaction.client.users.fetch(ticketUserId);
+
+                    const resultCommand = require('../commands/owner/result');
+                    await resultCommand.processResult(interaction, user, tier, ticketGamemode);
+
+                    // Mark session completed
+                    await supabase
+                        .from('testing_sessions')
+                        .update({ status: 'COMPLETED', ended_at: new Date().toISOString() })
+                        .eq('ticket_channel_id', interaction.channel.id)
+                        .eq('status', 'ACTIVE');
+
+                    setTimeout(async () => {
+                        try { await interaction.channel.delete('Normal test ticket closed'); } catch (e) { console.error(e); }
+                    }, 2500);
 
                     return;
                 }

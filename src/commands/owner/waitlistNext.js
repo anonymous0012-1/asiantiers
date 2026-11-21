@@ -132,6 +132,9 @@ module.exports = {
                     parent:
                         config.channels.ticketCategory,
 
+                    topic:
+                        `PLAYER:${member.discord_id} | GAMEMODE:${gamemode}`,
+
                     permissionOverwrites: [
                         {
                             id: guild.id,
@@ -143,14 +146,18 @@ module.exports = {
                             id: member.discord_id,
                             allow: [
                                 PermissionFlagsBits.ViewChannel,
-                                PermissionFlagsBits.SendMessages
+                                PermissionFlagsBits.SendMessages,
+                                PermissionFlagsBits.ReadMessageHistory,
+                                PermissionFlagsBits.AttachFiles
                             ]
                         },
                         {
                             id: roleConfig.getRoleIdSync('tester') || '1570451868943908884',
                             allow: [
                                 PermissionFlagsBits.ViewChannel,
-                                PermissionFlagsBits.SendMessages
+                                PermissionFlagsBits.SendMessages,
+                                PermissionFlagsBits.ReadMessageHistory,
+                                PermissionFlagsBits.AttachFiles
                             ]
                         }
                     ]
@@ -467,10 +474,27 @@ module.exports = {
         // SEND TICKET PANEL
         // =====================================================
 
+        const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+
+        const ticketButtons =
+            new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('test_close')
+                        .setLabel('Close')
+                        .setStyle(ButtonStyle.Danger),
+
+                    new ButtonBuilder()
+                        .setCustomId('test_skip')
+                        .setLabel('Skip')
+                        .setStyle(ButtonStyle.Secondary)
+                );
+
         await ticketChannel.send({
             content:
                 `<@${member.discord_id}>, your test is ready!`,
-            embeds: [infoEmbed]
+            embeds: [infoEmbed],
+            components: [ticketButtons]
         });
 
         // =====================================================
