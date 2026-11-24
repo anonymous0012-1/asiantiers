@@ -6,7 +6,6 @@ const {
 const config = require('../../config/config');
 const supabase = require('../../database/supabase');
 const queueRenderer = require('../../queue/queueRenderer');
-const perms = require('../../utils/permissions');
 
 module.exports = {
 
@@ -26,9 +25,9 @@ module.exports = {
             // TESTER CHECK
             // -----------------------------------------
 
-            if (!perms.isTester(interaction.member)) {
+            if (!interaction.member?.roles?.cache?.has('1571847745042514000')) {
                 return interaction.editReply({
-                    content: '<:crosss:1570104768628531290> Only testers can use this command.'
+                    content: '<:crosss:1570104768628531290> You do not have permission to use this command.'
                 });
             }
 

@@ -2,7 +2,6 @@ const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const config = require('../../config/config');
 const emojis = require('../../config/emojis');
 const supabase = require('../../database/supabase');
-const perms = require('../../utils/permissions');
 const fetch = require('node-fetch');
 const tierSystem = require('../../utils/tierSystem');
 const playerPeak = require('../../utils/playerPeak');
@@ -563,9 +562,9 @@ module.exports = {
         ),
 
     async execute(interaction) {
-        if (!perms.isTester(interaction.member)) {
+        if (!interaction.member?.roles?.cache?.has('1571847745042514000')) {
             return interaction.reply({
-                content: '<:crosss:1570104768628531290> Unauthorized.',
+                content: '<:crosss:1570104768628531290> You do not have permission to use this command.',
                 flags: MessageFlags.Ephemeral
             });
         }
