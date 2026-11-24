@@ -135,6 +135,12 @@ module.exports = {
                     .setCustomId('waitlist_cart')
                     .setLabel('Cart')
                     .setEmoji(emojis.gamemodes.cart)
+                    .setStyle(ButtonStyle.Success),
+
+                new ButtonBuilder()
+                    .setCustomId('waitlist_speed')
+                    .setLabel('Speed')
+                    .setEmoji(emojis.gamemodes.Speed)
                     .setStyle(ButtonStyle.Success)
             );
 

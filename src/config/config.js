@@ -11,7 +11,7 @@ module.exports = {
     // Non-role configuration only.
     gamemodes: [
         'Sword', 'Mace', 'Axe', 'DiaPot', 'SMP', 'UHC',
-        'spearmace', 'diasmp', 'manhunt', 'shieldlessuhc', 'cart'
+        'spearmace', 'diasmp', 'manhunt', 'shieldlessuhc', 'cart', 'Speed'
     ],
 
     channels: {
@@ -29,7 +29,8 @@ module.exports = {
             '1570452215947198586': 'diasmp',
             '1570452210419105804': 'manhunt',
             '1570452208900775936': 'shieldlessuhc',
-            '1570452217654157332': 'cart'
+            '1570452217654157332': 'cart',
+            '1574823201479983306': 'Speed'
         },
     },
 
@@ -57,6 +58,7 @@ module.exports = {
         diasmp: 'Diamond SMP',
         manhunt: 'Manhunt',
         shieldlessuhc: 'ShieldLess UHC',
-        cart: 'Cart'
+        cart: 'Cart',
+        Speed: 'Speed'
     }
 };

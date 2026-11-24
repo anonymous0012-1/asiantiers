@@ -1174,7 +1174,10 @@ module.exports = {
                             'shieldlessuhc',
 
                         waitlist_cart:
-                            'cart'
+                            'cart',
+
+                        waitlist_speed:
+                            'Speed'
                     };
 
                     const gamemode =

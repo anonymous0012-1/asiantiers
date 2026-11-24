@@ -10,7 +10,8 @@ module.exports = {
         diasmp: '<:Diamond_SMP:1544353700821213314>',
         manhunt: '<:Manhunt:1544354284647219232>',
         shieldlessuhc: '<:Shieldless_UHC:1544354597580185681>',
-        cart: ' <:Cart:1544353621653852220>'
+        cart: ' <:Cart:1544353621653852220>',
+        Speed: '<:Speed:1544353881188737074>'
     },
 
     tester: '<:tester:1544354810852020304>',

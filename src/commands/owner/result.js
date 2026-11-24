@@ -557,7 +557,8 @@ module.exports = {
                     { name: 'Diamond SMP', value: 'diasmp' },
                     { name: 'Manhunt', value: 'manhunt' },
                     { name: 'ShieldLess UHC', value: 'shieldlessuhc' },
-                    { name: 'Cart', value: 'cart' }
+                    { name: 'Cart', value: 'cart' },
+                    { name: 'Speed', value: 'Speed' }
                 )
         ),
 

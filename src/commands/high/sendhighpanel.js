@@ -94,7 +94,8 @@ if (!interaction.memberPermissions?.has('Administrator')) {
             'diasmp',
             'manhunt',
             'shieldlessuhc',
-            'cart'
+            'cart',
+            'Speed'
         ];
 
         const rows = [];
